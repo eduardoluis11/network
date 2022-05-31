@@ -121,5 +121,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-""" (source: Taylor's reply on https://stackoverflow.com/questions/51754318/django-static-files-not-loading-or-not-working ) """
+""" This will try to access all of the files in the "static" folder, including the JS
+file (source: Taylor's reply on https://stackoverflow.com/questions/51754318/django-static-files-not-loading-or-not-working ) """
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
