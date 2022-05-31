@@ -1,5 +1,31 @@
 {% extends "network/layout.html" %}
 
+<!-- This "load static" removed the error message caused by the "static" keyword 
+on the src attribute that calls the JS file (source: thedeleted account that replied 
+to Carual's post:
+https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_static_did_you/ ) -->
+{% load static %}
+
 {% block body %}
     TODO
+
+    <!-- DEBUG code: This will let me test if React is working (source: 
+    https://youtu.be/jrBhi8wbzPw  -->
+    <div id="react-test"></div>
+
+    <!-- DEBUG code: This will test if I my code is actually detecting JS code -->
+    <script>
+        console.log("This JS code was executed directly into the index.html file.")
+    </script>
+
+
 {% endblock %}
+
+<!-- This will call the .js file, which contains all of the JS code. Source: 
+https://cs50.harvard.edu/web/2020/projects/3/mail/ . 
+
+I will add the "babel" attribute to it so that the browser is able to interpret 
+the React code (source: https://youtu.be/jrBhi8wbzPw .) -->
+<!-- {% block script %}
+    <script src="{% static 'network/network_script.js' %}"></script>
+{% endblock %} -->

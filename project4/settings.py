@@ -120,3 +120,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+""" (source: Taylor's reply on https://stackoverflow.com/questions/51754318/django-static-files-not-loading-or-not-working ) """
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
