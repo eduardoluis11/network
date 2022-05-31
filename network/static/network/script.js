@@ -2,12 +2,12 @@
 
 /* This will let me test if my React code works (source: 
 https://youtu.be/jrBhi8wbzPw )  */
-// function Test() {
-//     return (
-//         <div>Hello, world!</div>
-//     );
-// }
+function Test() {
+    return (
+        <div>Hello, world!</div>
+    );
+}
 
-// ReactDOM.render(<Test />, document.querySelector("#react-test"));
+ReactDOM.render(<Test />, document.querySelector("#react-test"));
 
 console.log("This is written via the JS file, but without using React.")
