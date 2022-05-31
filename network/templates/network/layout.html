@@ -14,11 +14,7 @@
         <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
-        <!-- This will try to access the JS file. 
-            
-        I will add the "babel" attribute to it so that the browser is able to interpret the React code 
-        (source: https://youtu.be/jrBhi8wbzPw .) -->
-        <script type="text/babel" src="{% static 'network/script.js' %}"></script>
+
     </head>
     <body>
 
@@ -58,5 +54,11 @@
             {% block body %}
             {% endblock %}
         </div>
+        
+        <!-- This will try to access the JS file. 
+            
+        I will add the "babel" attribute to it so that the browser is able to interpret the React code 
+        (source: https://youtu.be/jrBhi8wbzPw .) -->
+        <script type="text/babel" src="{% static 'network/script.js' %}"></script>
     </body>
 </html>
