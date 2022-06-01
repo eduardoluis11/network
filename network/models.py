@@ -48,3 +48,13 @@ class Post(models.Model):
 class Follower(models.Model):
     follower = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_who_follows")
     follows = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_being_followed")
+
+""" Like model.
+
+The “post” column from the Like model needs to be a foreign key since I need to find an existing post, and one user 
+can only give one like to one specific post.
+
+"""
+class Like(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="likes_from_user")
+    post = models.ForeignKey("Post", on_delete=models.CASCADE, related_name="likes_in_a_post")
