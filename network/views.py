@@ -4,11 +4,30 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+# This Imports all the models
+from .models import User, Post, Follower, Like
 
+""" This will let me use the "@login_required" attribute (source: my "commerce"
+homework submmission: 
+https://github.com/me50/eduardoluis11/tree/web50/projects/2020/x/commerce )
+"""
+from django.contrib.auth.decorators import login_required
 
+# This will let me import the forms from forms.py
+from .forms import CreatePostForm
+
+""" Index view. This will have the "All Posts" page.
+
+Here, I will call the post creation Django form from forms.py. 
+"""
 def index(request):
-    return render(request, "network/index.html")
+
+    # This calls the post creation form
+    form = CreatePostForm()
+
+    return render(request, "network/index.html", {
+        "form": form,
+    })
 
 
 def login_view(request):

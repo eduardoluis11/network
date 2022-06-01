@@ -7,21 +7,46 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 {% load static %}
 
 {% block body %}
-    TODO
+
+
+    <!-- I will make the index.html file the “All Posts” page. -->
+    <h1>All Posts</h1>
+
+    <!-- I will add the csrf token. For that, I will add the <form> tags in the page that will let me create posts.
+    However, the form itself will be created using Django forms. For that, I will create a file called forms.py, and
+    create the form there.
+
+    I will add the form for creating a post here in the “All Posts” page.
+
+    I will only render the form for creating a post if the user’s logged in. I should add a “login required” decorator
+    in the index.html file for the <form> tag (source: my "commerce" homework submission:
+    https://github.com/me50/eduardoluis11/tree/web50/projects/2020/x/commerce .)
+
+    I will use the "as_p" notation while calling the form so that the format looks good in different screen
+    sizes. -->
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+
+            {{form.as_p}}   <!-- Django form -->
+
+            <input class="btn btn-primary" type="submit" value="Post">  <!-- Submit button -->
+        </form>
+    {% endif %}
 
     <!-- DEBUG code: This will let me test if React is working (source: 
     https://youtu.be/jrBhi8wbzPw  -->
     <div id="react-test"></div>
 
     <!-- DEBUG code: This will test if I my code is actually detecting JS code -->
-    <script>
-        console.log("This JS code was executed directly into the index.html file.")
-    </script>
+<!--    <script>-->
+<!--        console.log("This JS code was executed directly into the index.html file.")-->
+<!--    </script>-->
 
 
 {% endblock %}
 
-<!-- This will call the .js file, which contains all of the JS code. Source: 
+<!-- This will call the .js file, which contains all the JS code. Source:
 https://cs50.harvard.edu/web/2020/projects/3/mail/ . 
 
 I will add the "babel" attribute to it so that the browser is able to interpret 
