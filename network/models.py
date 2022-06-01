@@ -42,3 +42,9 @@ class Post(models.Model):
     body = models.TextField(blank=True)
     number_of_likes = models.IntegerField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+""" Follower model.
+"""
+class Follower(models.Model):
+    follower = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_who_follows")
+    follows = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_being_followed")
