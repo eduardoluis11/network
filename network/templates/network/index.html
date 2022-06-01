@@ -47,10 +47,16 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 	the columns. I just want to make sure that I can display the posts on the main page.
 
 	For that, I will have to display data using Jinja notation on the index.html file.
+
+	I can show each of the columns for each post using Jinja notation. I can use “post.likes” or “post.username” to
+	show each of the columns of each post.
     -->
     {% for post in all_posts %}
-        {{post.body}}
-        {{post.timestamp}}
+        <h6>{{post.user}}</h6>
+        <p>Edit</p>
+        <p>{{post.body}}</p>
+        <p>{{post.timestamp}}</p>
+        <p><3 {{post.number_of_likes}}</p>
         <br>
     {% endfor %}
 
@@ -60,7 +66,7 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     https://youtu.be/jrBhi8wbzPw  -->
     <div id="react-test"></div>
 
-    <!-- DEBUG code: This will test if I my code is actually detecting JS code -->
+    <!-- DEBUG code: This will test if my code is actually detecting JS code -->
 <!--    <script>-->
 <!--        console.log("This JS code was executed directly into the index.html file.")-->
 <!--    </script>-->
