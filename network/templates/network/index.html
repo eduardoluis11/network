@@ -36,6 +36,7 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
             <input class="btn btn-primary" type="submit" value="Post">  <!-- Submit button -->
         </form>
+        <br>
     {% endif %}
 
     <!-- 	Remember that everyone should be able to see all posts, regardless of whether or not they are logged in.
@@ -50,14 +51,22 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
 	I can show each of the columns for each post using Jinja notation. I can use “post.likes” or “post.username” to
 	show each of the columns of each post.
+
+	I will add a Bootstrap card or something similar to enclose each post in a rectangle shape. That will make it
+	easier for users to distinguish each post. I will use the “card mb-3” class to create the Bootstrap card (source:
+	https://getbootstrap.com/docs/4.4/components/card/ .) I will add a max-width to its CSS (using “rem” units) if it
+	looks “ugly” on wide screens.
     -->
     {% for post in all_posts %}
-        <h6>{{post.user}}</h6>
-        <p>Edit</p>
-        <p>{{post.body}}</p>
-        <p>{{post.timestamp}}</p>
-        <p><3 {{post.number_of_likes}}</p>
-        <br>
+        <div class="card mb-3">
+            <p><b>{{post.user}}</b></p>
+            <p>Edit</p>
+            <p>{{post.body}}</p>
+            <p>{{post.timestamp}}</p>
+            <p><3 {{post.number_of_likes}}</p>
+            <br>
+        </div>
+
     {% endfor %}
 
     <br>
