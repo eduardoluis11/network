@@ -38,6 +38,24 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
         </form>
     {% endif %}
 
+    <!-- 	Remember that everyone should be able to see all posts, regardless of whether or not they are logged in.
+
+	The href of the “All Posts” link on the navbar already has the value “{% url 'index' %}” in it. I don’t have to add
+	the link to the “All Posts” navbar link.
+
+	Now, I will at least show the posts in the “All Posts” page, without necessarily showing all the data from all
+	the columns. I just want to make sure that I can display the posts on the main page.
+
+	For that, I will have to display data using Jinja notation on the index.html file.
+    -->
+    {% for post in all_posts %}
+        {{post.body}}
+        {{post.timestamp}}
+        <br>
+    {% endfor %}
+
+    <br>
+    <br>
     <!-- DEBUG code: This will let me test if React is working (source: 
     https://youtu.be/jrBhi8wbzPw  -->
     <div id="react-test"></div>

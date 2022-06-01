@@ -32,8 +32,16 @@ from the inputs from the post creation form. Then, I will need the ID of the log
 obtained by calling the datetime.datetime.now() function. I will set the number of likes to 0 by default.
 
 Then, I will use a Query Set query to prepare the data to insert it into the database. 
+
+I will make a query to the database to get all of the posts so that I can display them on the "All Posts" page. 
+That should be done via a Query Set, and by using the all() function. The problem is that I need to arrange them
+so that the most recent ones are shown first (reverse chronological order). I might need to add a filter.
+
 """
 def index(request):
+
+    # This gets all the posts from the database
+    all_posts = Post.objects.all()
 
     # This calls the post creation form
     form = CreatePostForm()
@@ -62,12 +70,14 @@ def index(request):
         # This reloads the page and shows the confirmation message
         return render(request, "network/index.html", {
             "form": form,
-            "post_creation_success_message": post_creation_success_message
+            "post_creation_success_message": post_creation_success_message,
+            "all_posts": all_posts,
         })
 
 
     return render(request, "network/index.html", {
         "form": form,
+        "all_posts": all_posts,
     })
 
 
