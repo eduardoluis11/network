@@ -64,3 +64,4 @@ package-lock.json
 network/migrations/0003_follower.py
 network/migrations/0002_post.py
 .idea/network.iml
+network/migrations/0004_like.py
