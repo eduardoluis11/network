@@ -37,11 +37,16 @@ I will make a query to the database to get all of the posts so that I can displa
 That should be done via a Query Set, and by using the all() function. The problem is that I need to arrange them
 so that the most recent ones are shown first (reverse chronological order). I might need to add a filter.
 
+To order by ascending or descending order according to a specific column in Query Set, I need to use the “order_by” 
+attribute, and add a negative sign if I want the reverse of the default order (source: Keith’s reply on  
+https://stackoverflow.com/questions/9834038/django-order-by-query-set-ascending-and-descending  .) I also need to add 
+the name of the column between quotation marks. 
+ 
 """
 def index(request):
 
     # This gets all the posts from the database
-    all_posts = Post.objects.all()
+    all_posts = Post.objects.all().order_by('-timestamp')
 
     # This calls the post creation form
     form = CreatePostForm()
