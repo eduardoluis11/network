@@ -16,14 +16,55 @@ from django.contrib.auth.decorators import login_required
 # This will let me import the forms from forms.py
 from .forms import CreatePostForm
 
+# This will let me take the current date and time for the timestamp
+import datetime
+
 """ Index view. This will have the "All Posts" page.
 
 Here, I will call the post creation Django form from forms.py. 
+
+Now, I need to insert the post into the database. I will do that via the index() view. I will use an “if” to check if 
+the user has clicked on the “submit” button. If they have, I will execute the Query Set statements needed to insert 
+the data from the form into the database. 
+
+The data that I need to insert into the database are all of the columns for the Post table. I will first get the data 
+from the inputs from the post creation form. Then, I will need the ID of the logged user. The timestamp will be 
+obtained by calling the datetime.datetime.now() function. I will set the number of likes to 0 by default.
+
+Then, I will use a Query Set query to prepare the data to insert it into the database. 
 """
 def index(request):
 
     # This calls the post creation form
     form = CreatePostForm()
+
+    # This checks if the "submit" button has been clicked
+    if request.method == "POST":
+        new_post = request.POST["new_post"]
+
+        logged_user = request.user  # This gets the data from the logged user
+        logged_user_id = logged_user.id  # ID of the user
+
+        # This gets an instance of the logged user
+        user_instance = User.objects.get(id=logged_user_id)
+
+        current_timestamp = datetime.datetime.now()
+
+        # This prepares the data before inserting it into the database
+        new_post_created = Post(user=user_instance, body=new_post, number_of_likes=0, timestamp=current_timestamp)
+
+        # This inserts the data into the database
+        new_post_created.save()
+
+        # Confirmation flash message
+        post_creation_success_message = 'Your post has been created!'
+
+        # This reloads the page and shows the confirmation message
+        return render(request, "network/index.html", {
+            "form": form,
+            "post_creation_success_message": post_creation_success_message
+        })
+
 
     return render(request, "network/index.html", {
         "form": form,

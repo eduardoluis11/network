@@ -23,8 +23,12 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     https://github.com/me50/eduardoluis11/tree/web50/projects/2020/x/commerce .)
 
     I will use the "as_p" notation while calling the form so that the format looks good in different screen
-    sizes. -->
+    sizes.
+
+    I will print a success message if the user creates a post.-->
     {% if user.is_authenticated %}
+        <p style="color: green;">{{post_creation_success_message}}</p>
+
         <form method="post">
             {% csrf_token %}
 
