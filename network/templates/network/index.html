@@ -56,6 +56,9 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 	easier for users to distinguish each post. I will use the “card mb-3” class to create the Bootstrap card (source:
 	https://getbootstrap.com/docs/4.4/components/card/ .) I will add a max-width to its CSS (using “rem” units) if it
 	looks “ugly” on wide screens.
+
+	I ended up using the red heart emoji as the icon that accompanies the like count. Source of the emoji code:
+	https://emojipedia.org/red-heart/ .
     -->
     {% for post in all_posts %}
         <div class="card mb-3">
@@ -63,7 +66,7 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
             <p>Edit</p>
             <p>{{post.body}}</p>
             <p>{{post.timestamp}}</p>
-            <p><3 {{post.number_of_likes}}</p>
+            <p>❤ {{post.number_of_likes}}</p>
             <br>
         </div>
 
