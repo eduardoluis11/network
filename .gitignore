@@ -61,3 +61,6 @@ package-lock.json
 .idea/inspectionProfiles/Project_Default.xml
 .idea/.gitignore
 
+network/migrations/0003_follower.py
+network/migrations/0002_post.py
+.idea/network.iml
