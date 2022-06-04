@@ -136,3 +136,20 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+""" Profile page view.
+
+Since the profile page will change depending on the user that logs in, I need a parameter. I WON’T add the “login 
+required” decorator since even people who aren’t logged in should be able to see any person’s profile page. So, what 
+I’ll do is to take the username from the post or from the navbar, and I’ll insert it as a parameter in the profile() 
+view. That way, I’ll know which profile page to render.
+
+
+"""
+def profile(request, username):
+
+
+
+    return render(request, "network/profile.html", {
+        "username": username,
+    })
