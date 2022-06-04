@@ -25,7 +25,20 @@
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
+                        <!-- This will send the user to their profile page if they click on it.
+
+                         BUG: If the user open the profile page by clicking on a post, and then they click on their own
+                         username in the navbar, they will go to “http://127.0.0.1:8000/profile/profile/username”, and
+                         an error message. I would need to redirect the user to the home page, and then to their
+                         profile page. Or, I could make an “if” statement, and check the current URL. If the current
+                         URL is any profile page, I will send the user to “/username”. Else, if the user is in the
+                         homepage, the user will be redirected to “profile/username”. Let me see if there’s a way
+                         to type a URL in “href” that tells the user to go to the home page.
+
+                        BUG FIX: I just needed to add a “/” before “profile” in the href attribute (i.e: “/profile/…”)
+                        (source: https://www.w3schools.com/html/html_links.asp .)
+                        -->
+                        <a class="nav-link" href="/profile/{{user.username}}"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
