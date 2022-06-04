@@ -156,6 +156,11 @@ https://github.com/me50/eduardoluis11/tree/web50/projects/2020/x/mail .)
 
 If the error message is not empty, I will add a conditional that prevents the title of the page from being rendered.
 
+Writing “{% url profile %}” in the href of the usernames in the posts won’t work. If I do that, I will simply go to 
+profile.html, but without obtaining the username of the post that I just clicked, so I will see buggy behavior. So, 
+I will have to put a link like “profile/{{username_from_post}}” in the href of the <a> tag that will contain the 
+post’s username.
+
 """
 def profile(request, username):
 

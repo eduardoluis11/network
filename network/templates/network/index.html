@@ -59,10 +59,15 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
 	I ended up using the red heart emoji as the icon that accompanies the like count. Source of the emoji code:
 	https://emojipedia.org/red-heart/ .
+
+	Now, I will add the link to the profile page to all instances of the username in the “all posts” page, as well as
+	in the navbar. For the navbar, I will grab the username of the logged user. Meanwhile, for the username in the
+	posts, I will use Jinja notation to get the username of that user from the Post table.
+
     -->
     {% for post in all_posts %}
         <div class="card mb-3">
-            <p><b>{{post.user}}</b></p>
+            <a href="profile/{{post.user}}"><b>{{post.user}}</b></a>
             <p>Edit</p>
             <p>{{post.body}}</p>
             <p>{{post.timestamp}}</p>
