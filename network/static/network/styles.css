@@ -1,3 +1,13 @@
+/* I wanted to fix the Django form so that the label of the <textarea> is on top of the <textarea>. To do that, I
+simply need to edit the CSS of the label, so that it occupies 100% of the width of the screen (source:
+user10238703's reply on
+https://stackoverflow.com/questions/51893239/how-to-place-a-the-label-description-of-a-django-char-field-above-the-textbox .)
+
+*/
+label {
+    width: 100%;
+}
+
 /* body {
     background-color: black;
 } */
