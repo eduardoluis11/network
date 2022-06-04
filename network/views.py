@@ -144,12 +144,33 @@ required” decorator since even people who aren’t logged in should be able to
 I’ll do is to take the username from the post or from the navbar, and I’ll insert it as a parameter in the profile() 
 view. That way, I’ll know which profile page to render.
 
+To check if a user exists before sending them into the user’s profile page, I will use the following snippet from my 
+submission from the “mail” homework assignment (source: 
+https://github.com/me50/eduardoluis11/tree/web50/projects/2020/x/mail .)
+        try:
+            user_variable = User.objects.get(username=username_from_parameter)
+        except User.DoesNotExist:
+    		return render(request, "network/profile.html", {
+        		"error_message": "That username does not exist."
+    		})
+
+If the error message is not empty, I will add a conditional that prevents the title of the page from being rendered.
 
 """
 def profile(request, username):
 
+    # Check if the username exists
+    try:
+        existing_username = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return render(request, "network/profile.html", {
+            "error_message": "Error: That username does not exist."
+        })
 
+    # If the user exists, the error message won't be triggered
+    error_message = ''
 
     return render(request, "network/profile.html", {
-        "username": username,
+        "username": existing_username,
+        "error_message": error_message,
     })

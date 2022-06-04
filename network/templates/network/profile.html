@@ -4,5 +4,16 @@
 {% load static %}
 
 {% block body %}
-    <h1>{{username}}'s Profile Page</h1>
+
+    <!-- If the user exists, I will render their username as the title of the page -->
+    {% if error_message == 'Error: That username does not exist.' %}
+
+        <!-- This displays an error message if the username doesn't exist -->
+        <p style="color: red;"><b>{{error_message}}</b></p>
+
+    {% else %}
+        <h1>{{username}}'s Profile Page</h1>
+    {% endif %}
+
+
 {% endblock %}
