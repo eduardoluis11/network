@@ -177,6 +177,10 @@ https://stackoverflow.com/questions/15635790/how-to-count-the-number-of-rows-in-
 
 I don’t need to save() the statement, since I’m not editing the database. I’m just getting data from the database.
 
+This is similar to what I show on the “All Posts” page (the index.html file), but in this case, I will only show the 
+posts that belong to the user whose name is in the profile page. That can be done with a “filter()”, and specifying 
+that the user should be the one from the “username” parameter on the profile() view.
+
 """
 def profile(request, username):
 
@@ -197,10 +201,14 @@ def profile(request, username):
     # This obtains the number of followers of the user in the profile
     number_of_followers = Follower.objects.filter(follows=existing_username).count()
 
+    # This gets all the posts from the username that's displayed on the profile page
+    all_posts_from_user = Post.objects.filter(user=existing_username).order_by('-timestamp')
+
     return render(request, "network/profile.html", {
         "username": existing_username,
         "error_message": error_message,
         "number_of_followers": number_of_followers,
         "number_of_people_that_user_follows": number_of_people_that_user_follows,
+        "all_posts_from_user": all_posts_from_user,
 
     })

@@ -20,6 +20,22 @@
         user is following -->
         <p>{{number_of_followers}} Followers</p>
         <p>{{number_of_people_that_user_follows}} Following</p>
+        <br>
+
+        <!-- This displays all the posts from the user in reverse chronological order. I’ll put a title that says
+        something like “Posts” above the profile’s posts. -->
+        <h5><b>{{username}}'s Posts</b></h5>
+        {% for post in all_posts_from_user %}
+            <div class="card mb-3">
+                <a href="profile/{{post.user}}"><b>{{post.user}}</b></a>
+                <p>Edit</p>
+                <p>{{post.body}}</p>
+                <p>{{post.timestamp}}</p>
+                <p>❤ {{post.number_of_likes}}</p>
+                <br>
+            </div>
+        {% endfor %}
+
     {% endif %}
 
 
