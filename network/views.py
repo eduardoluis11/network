@@ -161,6 +161,22 @@ profile.html, but without obtaining the username of the post that I just clicked
 I will have to put a link like “profile/{{username_from_post}}” in the href of the <a> tag that will contain the 
 post’s username.
 
+I still haven’t implemented the “following” functionality. So, all users will have 0 followers.
+
+To display the followers on the profile page, I will more or less imitate Twitter, and show a number and text to the 
+side that says “followers.”
+
+To do this well, I need to access to the database to access the followers of the logged user. To access the number of 
+followers of a user, I will use a “group by”, or its equivalent in Query Set notation. Then, I will use a COUNT 
+statement to count the number of users that appear on the “follows” column for all of the instances that the current 
+user appears in “follower”. I need to check how to use COUNT and GROUP BY in Query Set notation.
+	
+To use COUNT in query set, I need to put “.count()” at the end of a filter() function (source: Mikhail Chernykh’s 
+reply on 
+https://stackoverflow.com/questions/15635790/how-to-count-the-number-of-rows-in-a-database-table-in-django#:~:text=You%20can%20either%20use%20Python's,the%20provided%20count()%20method.&text=You%20should%20also%20go%20through%20the%20QuerySet%20API%20Documentation%20for%20more%20information .)
+
+I don’t need to save() the statement, since I’m not editing the database. I’m just getting data from the database.
+
 """
 def profile(request, username):
 
@@ -175,7 +191,12 @@ def profile(request, username):
     # If the user exists, the error message won't be triggered
     error_message = ''
 
+    # This obtains the number of followers of the logged user
+    number_of_followers = Follower.objects.filter(follower=existing_username).count()
+
     return render(request, "network/profile.html", {
         "username": existing_username,
         "error_message": error_message,
+        "number_of_followers": number_of_followers,
+
     })
