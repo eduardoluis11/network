@@ -191,12 +191,16 @@ def profile(request, username):
     # If the user exists, the error message won't be triggered
     error_message = ''
 
-    # This obtains the number of followers of the logged user
-    number_of_followers = Follower.objects.filter(follower=existing_username).count()
+    # This obtains the number of people that the user is following
+    number_of_people_that_user_follows = Follower.objects.filter(follower=existing_username).count()
+
+    # This obtains the number of followers of the user in the profile
+    number_of_followers = Follower.objects.filter(follows=existing_username).count()
 
     return render(request, "network/profile.html", {
         "username": existing_username,
         "error_message": error_message,
         "number_of_followers": number_of_followers,
+        "number_of_people_that_user_follows": number_of_people_that_user_follows,
 
     })
