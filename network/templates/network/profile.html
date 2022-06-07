@@ -20,6 +20,11 @@
         user is following -->
         <p>{{number_of_followers}} Followers</p>
         <p>{{number_of_people_that_user_follows}} Following</p>
+
+        <!-- "Follow" button. It's better to assign it an ID rather than a class, since I will only show this button
+        in the profile page. -->
+        <button id="follow_or_unfollow" class="btn btn-primary">Follow</button>
+        <br>
         <br>
 
         <!-- This displays all the posts from the user in reverse chronological order. I’ll put a title that says
