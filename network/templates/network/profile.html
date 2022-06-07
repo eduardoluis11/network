@@ -23,7 +23,10 @@
 
         <!-- "Follow" button. It's better to assign it an ID rather than a class, since I will only show this button
         in the profile page. -->
-        <button id="follow_or_unfollow" class="btn btn-primary">Follow</button>
+        {% if user.is_authenticated %}
+            <button id="follow_or_unfollow" class="btn btn-primary">Follow</button>
+        {% endif %}
+
         <br>
         <br>
 
