@@ -181,6 +181,12 @@ This is similar to what I show on the “All Posts” page (the index.html file)
 posts that belong to the user whose name is in the profile page. That can be done with a “filter()”, and specifying 
 that the user should be the one from the “username” parameter on the profile() view.
 
+I’ll try comparing the logged user from the user in the profile page in the view(), NOT via Jinja notation. The keyword 
+“request.user” stores the logged user. I don’t know if that’s an instance, or if it’s the username. So, I will create 
+a Boolean variable that stores whether the “follow” button should be rendered. If the logged user has the same username 
+than the user of the profile page, the Boolean variable will change to “false”. By default, it will be set to “true”. 
+If the variable is “true”, and if the user’s signed in, I will render the “follow” button.
+
 """
 def profile(request, username):
 
@@ -194,6 +200,14 @@ def profile(request, username):
 
     # If the user exists, the error message won't be triggered
     error_message = ''
+
+    # This tells me whether to render the follow button
+    is_follow_active = True
+
+    # this checks if the user's logged in, and whether if it's the same as the user in the profile page
+    if request.user.is_authenticated:
+        if str(request.user) == str(existing_username):
+            is_follow_active = False
 
     # This obtains the number of people that the user is following
     number_of_people_that_user_follows = Follower.objects.filter(follower=existing_username).count()
@@ -210,6 +224,7 @@ def profile(request, username):
         "number_of_followers": number_of_followers,
         "number_of_people_that_user_follows": number_of_people_that_user_follows,
         "all_posts_from_user": all_posts_from_user,
+        "is_follow_active": is_follow_active,
 
     })
 

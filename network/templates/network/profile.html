@@ -33,8 +33,10 @@
         “username”, which stores the name of the user of the profile page. So, if both “user.username” and “username”
         are different, and if a user is logged, I will render the “Follow” button.
 
+        BUG: For some reason, the “if” statement in profile.html is telling me that “username” is different from
+        “user.username”, even though both things show the exact same text. Let me see if I can turn both into strings.
         -->
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and is_follow_active == True %}
 
             <!-- DEBUG message -->
 <!--            <p>{{username}}</p>-->
