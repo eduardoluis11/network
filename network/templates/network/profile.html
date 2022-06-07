@@ -21,9 +21,25 @@
         <p>{{number_of_followers}} Followers</p>
         <p>{{number_of_people_that_user_follows}} Following</p>
 
-        <!-- "Follow" button. It's better to assign it an ID rather than a class, since I will only show this button
-        in the profile page. -->
+        <!-- "Follow" button.
+
+        It's better to assign it an ID rather than a class, since I will only show this button
+        in the profile page.
+
+        But, to avoid any bugs, I will add code to prevent the user from following themselves. I will add an extra
+        condition that says that if the logged user is different to the user in the profile page, to display the
+        “follow” button. I could do that directly in the profile.html file by using Jinja notation. I can access the
+        username from the logged user using “user.username”. And, I’m already sending via Jinja a variable called
+        “username”, which stores the name of the user of the profile page. So, if both “user.username” and “username”
+        are different, and if a user is logged, I will render the “Follow” button.
+
+        -->
         {% if user.is_authenticated %}
+
+            <!-- DEBUG message -->
+<!--            <p>{{username}}</p>-->
+<!--            <p>{{user.username}}</p>-->
+
             <!-- I will create the button using React -->
             <div id="follow_or_unfollow"></div>
 
@@ -38,7 +54,7 @@
         <h5><b>{{username}}'s Posts</b></h5>
         {% for post in all_posts_from_user %}
             <div class="card mb-3">
-                <a href="profile/{{post.user}}"><b>{{post.user}}</b></a>
+                <a href="/profile/{{post.user}}"><b>{{post.user}}</b></a>
                 <p>Edit</p>
                 <p>{{post.body}}</p>
                 <p>{{post.timestamp}}</p>

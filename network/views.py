@@ -212,3 +212,32 @@ def profile(request, username):
         "all_posts_from_user": all_posts_from_user,
 
     })
+
+""" API for following or unfollowing a user
+
+I will create the API routes for the Follow_or_unfollow() function. For that, I will create a new view(). That view 
+will either insert an entry into the Follower table, or remove it. I could call the view something like “follow()”. 
+
+I could put it in an URL called “/profile/username/follow/”. From that URL, I could get the username of the profile, so 
+that the API knows the name of the user that I should follow or unfollow. To fix it a little bit, the URL should be 
+something like “/profile/<str:username>/follow/”. 
+
+I will need to make a call to the database before doing anything else. So, I will use a variable to call all of the 
+followers, and one for all of the people that are being followed. This could be very similar to the code that I wrote 
+for displaying the number of followers for a user.
+
+"""
+def follow(request, username):
+    # Check if the username exists
+    try:
+        existing_username = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return render(request, "network/profile.html", {
+            "error_message": "Error: That username does not exist."
+        })
+
+    # # This obtains the number of people that the user is following
+    # number_of_people_that_user_follows = Follower.objects.filter(follower=existing_username)
+    #
+    # # This obtains the number of followers of the user in the profile
+    # number_of_followers = Follower.objects.filter(follows=existing_username)

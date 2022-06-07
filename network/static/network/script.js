@@ -14,7 +14,14 @@ will be "Follow". However, I ideally I should check the database to see whether 
 enter into someone else's profile page.
 
 To check if the user is following or not another user, I will use an "if" statement, and 
-I will use an API and a fetch() function to check if the user is following the other user. 
+I will use an API and a fetch() function to check if the user is following the other user.
+
+In the "const" variable (which I could name "let" or "var", since its original value may change
+depending on whether the user is already following someone), I could make a fetch call()
+to check whether the user has any followers on the Follow table. If they don't have any followers,
+the initial state of the button should be follow. So, once I create the API to fetch the 
+Follow table, I will add an "if" statement, and I will specify whether "React.useState()"
+should initially be "Follow" or "Unfollow".
 
 */
 function Follow_or_unfollow() {
