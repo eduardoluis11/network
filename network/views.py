@@ -224,6 +224,9 @@ def profile(request, username):
     # This tells me whether to render "follow" or "unfollow"
     is_user_following_profile = False
 
+    # This is a debugging message that checks if a user is following a person in a profile.
+    is_user_following_query_set = ''
+
     # this checks if the user's logged in, and whether if it's the same as the user in the profile page
     if request.user.is_authenticated:
         if str(request.user) == str(existing_username):
@@ -239,7 +242,7 @@ def profile(request, username):
             is_user_following_query_set = Follower.objects.filter(follower=logged_user, follows=profile_person)
 
             # If the user is not following the profile person, I will render the word "follow"
-            if is_user_following_query_set is None:
+            if not is_user_following_query_set:
                 is_user_following_profile = False
             else:
                 is_user_following_profile = True
@@ -262,6 +265,7 @@ def profile(request, username):
         "all_posts_from_user": all_posts_from_user,
         "is_follow_active": is_follow_active,
         "is_user_following_profile": is_user_following_profile,
+        "is_user_following_query_set": is_user_following_query_set,
 
     })
 

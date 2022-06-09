@@ -49,7 +49,7 @@ should initially be "Follow" or "Unfollow".
 //}
 //
 //// This renders the button
-//ReactDOM.render(<Follow_or_unfollow />, document.querySelector("#follow_or_unfollow"));
+//ReactDOM.render(<Follow_or_unfollow />, document.querySelectorAll(".follow_or_unfollow"));
 //
 
 

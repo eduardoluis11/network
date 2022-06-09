@@ -51,14 +51,24 @@
 
             <!-- I will modify the button using React -->
             {% if is_user_following_profile == False %}
-                <div id="follow_or_unfollow">
+                <div class="follow_or_unfollow">
                     <input type="submit" class="btn btn-primary" value="Follow">
                 </div>
             {% else %}
-                <div id="follow_or_unfollow">
+                <div class="follow_or_unfollow">
                     <input type="submit" class="btn btn-primary" value="Unfollow">
                 </div>
             {% endif %}
+
+            <!-- DEBUG message: This will show me the value of is_user_following_profile -->
+            <p><b>{{is_user_following_profile}}</b></p>
+
+            <!-- DEBUG message: This shows me the value of the Query Set statement that checks if a user is
+            following the person in the profile -->
+<!--            <p><b>{{is_user_following_query_set}}</b></p>-->
+<!--            <p><b>{{is_user_following_query_set.0}}</b></p>-->
+<!--            <p><b>{{is_user_following_query_set.0.follower}}</b></p>-->
+<!--            <p><b>{{is_user_following_query_set.0.follows}}</b></p>-->
 
             <!-- <button id="follow_or_unfollow" class="btn btn-primary">Follow</button> -->
         {% endif %}
