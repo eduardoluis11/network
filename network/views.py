@@ -187,6 +187,23 @@ a Boolean variable that stores whether the “follow” button should be rendere
 than the user of the profile page, the Boolean variable will change to “false”. By default, it will be set to “true”. 
 If the variable is “true”, and if the user’s signed in, I will render the “follow” button.
 
+I think I know how to access the database to know whether to render the word “follow” or “unfollow” on the button. In 
+the profile() view, I will check if the logged user is following the person in the profile page. If they aren’t, I 
+will use a Boolean variable to render the word “follow”, and then send that variable to the page via Jinja. Otherwise, 
+I will tell the Boolean variable that the word “unfollow” should be rendered. The actual word will be rendered via 
+Jinja, depending on the state of the Boolean variable. 
+
+The only thing that this will achieve will be to tell the page whether to render the word “follow” or “unfollow” when 
+the user first enters the page. This will NOT change the button once the user clicks on the “follow/unfollow” button. 
+The latter functionality will be done using JS.
+
+I can’t use the same Boolean that I used for checking if the profile is the same user as the logged user, since that 
+Boolean only tells me whether or not to render the button. So, I will have to create another Boolean variable.
+
+It seems that, to have the possibility of getting an empty query from a Query Set statement, I need to use filter(), 
+not get() (source: Niklas's question on 
+https://stackoverflow.com/questions/1387727/checking-for-empty-queryset-in-django .)
+
 """
 def profile(request, username):
 
@@ -204,10 +221,29 @@ def profile(request, username):
     # This tells me whether to render the follow button
     is_follow_active = True
 
+    # This tells me whether to render "follow" or "unfollow"
+    is_user_following_profile = False
+
     # this checks if the user's logged in, and whether if it's the same as the user in the profile page
     if request.user.is_authenticated:
         if str(request.user) == str(existing_username):
             is_follow_active = False
+
+        else:
+            logged_user = request.user  # This stores the logged user
+
+            # Instance of the person of the profile page
+            profile_person = User.objects.get(username=existing_username)
+
+            # This checks if the current user is following the person in the profile ...
+            is_user_following_query_set = Follower.objects.filter(follower=logged_user, follows=profile_person)
+
+            # If the user is not following the profile person, I will render the word "follow"
+            if is_user_following_query_set is None:
+                is_user_following_profile = False
+            else:
+                is_user_following_profile = True
+
 
     # This obtains the number of people that the user is following
     number_of_people_that_user_follows = Follower.objects.filter(follower=existing_username).count()
@@ -225,6 +261,7 @@ def profile(request, username):
         "number_of_people_that_user_follows": number_of_people_that_user_follows,
         "all_posts_from_user": all_posts_from_user,
         "is_follow_active": is_follow_active,
+        "is_user_following_profile": is_user_following_profile,
 
     })
 
