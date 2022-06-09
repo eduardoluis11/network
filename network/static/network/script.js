@@ -1,5 +1,27 @@
 /* All of my JS code will go here */
 
+/* It would be best to type the HTML code for the buttons using React in the JS file, NOT directly in the HTML file. */
+
+/* This will render the "Follow" button */
+//function Follow_button() {
+//    return (
+//        <div>Follow Button</div>
+//    );
+//}
+//
+//ReactDOM.render(<Follow_button />, document.querySelector("#follow_button"));
+
+
+/* This will render the "Unfollow" button */
+function Unfollow_button() {
+    return (
+        <div>Unfollow Button</div>
+    );
+}
+
+ReactDOM.render(<Unfollow_button />, document.querySelector("#unfollow_button"));
+
+
 /* I will make the button using React. So, I will create a <div> that will render the Follow/Unfollow 
 button, and I will assign it an ID. Then, I will go to the JS file, and I will create a function that 
 will render the button. I need to use “ReactDOM.render”, and use a querySelector (or a getElementByID) 
@@ -24,7 +46,7 @@ Follow table, I will add an "if" statement, and I will specify whether "React.us
 should initially be "Follow" or "Unfollow".
 
 */
-//function Follow_or_unfollow() {
+//function Follow_or_unfollow_user() {
 //
 //    // This stores whether the button should say "follow" or "unfollow"
 //    const [isFollowing, setFollowState] = React.useState("Follow");
@@ -49,12 +71,14 @@ should initially be "Follow" or "Unfollow".
 //}
 //
 //// This renders the button
-//ReactDOM.render(<Follow_or_unfollow />, document.querySelectorAll(".follow_or_unfollow"));
+//ReactDOM.render(<Follow_or_unfollow_user />, document.querySelector("#follow_or_unfollow"));
 //
 
 
-/* This will let me test if my React code works (source: 
-https://youtu.be/jrBhi8wbzPw )  */
+/* This will let me test if my React code works (source:
+https://youtu.be/jrBhi8wbzPw ).
+
+This gives me an error in the console if I enter into a profile page */
 function Test() {
     return (
         <div>Hello, world!</div>
@@ -64,3 +88,19 @@ function Test() {
 ReactDOM.render(<Test />, document.querySelector("#react-test"));
 
 console.log("This is written via the JS file, but without using React.")
+
+/* This will test if the "follow" button works when clicked */
+function Follow_button_test() {
+    console.log("You just clicked on the Follow/Unfollow button.")
+
+    // This will empty the div if the user clicks on the unfollow button
+    document.querySelector("#follow_or_unfollow_div").innerHTML = ''
+
+
+}
+//    return (
+//        <div><b>You clicked on the Follow/Unfollow button</b></div>
+//    );
+//}
+//
+//ReactDOM.render(<Follow_button_test />, document.querySelector("#follow_or_unfollow_div"));

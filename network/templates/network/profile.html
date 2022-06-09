@@ -42,26 +42,62 @@
         that value into a string using str() to avoid bugs.) If the word being obtained is “follow”, I will change
         that button into “unfollow” if the user clicks on it (or a “submit” is being sent,) and vice-versa.
 
+        Just like there is an event listener called “onClick()” in HTML, there’s also one called “onsubmit()” (source:
+        https://www.w3schools.com/tags/ev_onsubmit.asp .) So, I will add an “onsubmit” attribute to the button in
+        profile.html to call the appropriate JS function when I click on it.
+
+        To avoid errors in React, I need to use only IDs to make the JS calls, not classes (source: Anastasiia Solop's
+        reply on https://stackoverflow.com/questions/64097973/uncaught-error-minified-react-error-200 .
+
+        If I submit an input, the entire page will reload. So, I will re-do the buttons as <button> tags, and I will
+        delete the <input> tags. Also, they will be activated with an onClick(), NOT with an onsubmit. That’s so I
+        don’t reload the entire page when I click on the “Follow/Unfollow” button.
+
         -->
         {% if user.is_authenticated and is_follow_active == True %}
+
+        <div>
+            <button id="follow_or_unfollow" class="btn btn-primary" onClick="Follow_button_test()">
+                {{follow_button_text}}
+            </button>
+        </div>
 
             <!-- DEBUG message -->
 <!--            <p>{{username}}</p>-->
 <!--            <p>{{user.username}}</p>-->
 
             <!-- I will modify the button using React -->
-            {% if is_user_following_profile == False %}
-                <div class="follow_or_unfollow">
-                    <input type="submit" class="btn btn-primary" value="Follow">
-                </div>
-            {% else %}
-                <div class="follow_or_unfollow">
-                    <input type="submit" class="btn btn-primary" value="Unfollow">
-                </div>
-            {% endif %}
+<!--            {% if is_user_following_profile == False %}-->
+
+<!--                &lt;!&ndash; This renders the "Follow" button &ndash;&gt;-->
+<!--                <div id="follow_button"></div>-->
+
+
+<!--                <div>-->
+<!--                    <button id="follow_or_unfollow" type="submit" class="btn btn-primary"-->
+<!--                            onClick="Follow_button_test()">-->
+<!--                        Follow-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            {% else %}-->
+
+<!--                &lt;!&ndash; This renders the "Unfollow" button &ndash;&gt;-->
+<!--                <div id="unfollow_button"></div>-->
+
+
+<!--&lt;!&ndash;                <div id="follow_or_unfollow_div">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <button id="follow_or_unfollow" type="submit" class="btn btn-primary"&ndash;&gt;-->
+<!--&lt;!&ndash;                            onClick="Follow_button_test()">&ndash;&gt;-->
+<!--&lt;!&ndash;                        Unfollow&ndash;&gt;-->
+<!--&lt;!&ndash;                    </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--            {% endif %}-->
+
+            <!-- DEBUG msg: React test  -->
+<!--            <div id="follow_or_unfollow_div"></div>-->
 
             <!-- DEBUG message: This will show me the value of is_user_following_profile -->
-            <p><b>{{is_user_following_profile}}</b></p>
+            <p>Am I following this person?: <b>{{is_user_following_profile}}</b></p>
 
             <!-- DEBUG message: This shows me the value of the Query Set statement that checks if a user is
             following the person in the profile -->

@@ -204,6 +204,11 @@ It seems that, to have the possibility of getting an empty query from a Query Se
 not get() (source: Niklas's question on 
 https://stackoverflow.com/questions/1387727/checking-for-empty-queryset-in-django .)
 
+To prevent any problems with React, and to avoid using two divs with the same ID, I will create a variable in my 
+profile() view that says stores either the value “Follow” or “Unfollow”. Then, I will render that word directly into 
+the button via Jinja notation by using notation like this:
+    <button>{{variable_that_says_follow_unfollow}}</button>
+
 """
 def profile(request, username):
 
@@ -227,6 +232,9 @@ def profile(request, username):
     # This is a debugging message that checks if a user is following a person in a profile.
     is_user_following_query_set = ''
 
+    # This will render the word "follow" or "unfollow" in the button itself
+    follow_button_text = ''
+
     # this checks if the user's logged in, and whether if it's the same as the user in the profile page
     if request.user.is_authenticated:
         if str(request.user) == str(existing_username):
@@ -244,8 +252,10 @@ def profile(request, username):
             # If the user is not following the profile person, I will render the word "follow"
             if not is_user_following_query_set:
                 is_user_following_profile = False
+                follow_button_text = "Follow"
             else:
                 is_user_following_profile = True
+                follow_button_text = "Unfollow"
 
 
     # This obtains the number of people that the user is following
@@ -266,6 +276,7 @@ def profile(request, username):
         "is_follow_active": is_follow_active,
         "is_user_following_profile": is_user_following_profile,
         "is_user_following_query_set": is_user_following_query_set,
+        "follow_button_text": follow_button_text,
 
     })
 
