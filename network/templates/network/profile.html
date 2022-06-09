@@ -37,6 +37,11 @@
         “user.username”, even though both things show the exact same text. Let me see if I can turn both into strings.
         (FIXED.)
 
+        As for toggling the button between “follow” and “unfollow”, I will use JS code, and either a querySelector or
+        a getElementByID. I will use the querySelector to check the word being printed on that button (I may convert
+        that value into a string using str() to avoid bugs.) If the word being obtained is “follow”, I will change
+        that button into “unfollow” if the user clicks on it (or a “submit” is being sent,) and vice-versa.
+
         -->
         {% if user.is_authenticated and is_follow_active == True %}
 
@@ -44,8 +49,16 @@
 <!--            <p>{{username}}</p>-->
 <!--            <p>{{user.username}}</p>-->
 
-            <!-- I will create the button using React -->
-            <div id="follow_or_unfollow"></div>
+            <!-- I will modify the button using React -->
+            {% if is_user_following_profile == False %}
+                <div id="follow_or_unfollow">
+                    <input type="submit" class="btn btn-primary" value="Follow">
+                </div>
+            {% else %}
+                <div id="follow_or_unfollow">
+                    <input type="submit" class="btn btn-primary" value="Unfollow">
+                </div>
+            {% endif %}
 
             <!-- <button id="follow_or_unfollow" class="btn btn-primary">Follow</button> -->
         {% endif %}

@@ -24,33 +24,33 @@ Follow table, I will add an "if" statement, and I will specify whether "React.us
 should initially be "Follow" or "Unfollow".
 
 */
-function Follow_or_unfollow() {
-
-    // This stores whether the button should say "follow" or "unfollow"
-    const [isFollowing, setFollowState] = React.useState("Follow");
-
-    // This will toggle the button to "follow" or "unfollow" if the user clicks on it
-    function updateFollowState() {
-
-        // If the button says "follow", I will change it to "unfollow"
-        if (isFollowing == "Follow") {
-            setFollowState("Unfollow");
-        }
-        else {
-            setFollowState("Follow");
-        }
-        
-    }
-
-    // This is the HTML code for the button
-    return (
-        <button className="btn btn-primary" onClick={updateFollowState}>{isFollowing}</button>
-    );
-}
-
-// This renders the button
-ReactDOM.render(<Follow_or_unfollow />, document.querySelector("#follow_or_unfollow"));
-
+//function Follow_or_unfollow() {
+//
+//    // This stores whether the button should say "follow" or "unfollow"
+//    const [isFollowing, setFollowState] = React.useState("Follow");
+//
+//    // This will toggle the button to "follow" or "unfollow" if the user clicks on it
+//    function updateFollowState() {
+//
+//        // If the button says "follow", I will change it to "unfollow"
+//        if (isFollowing == "Follow") {
+//            setFollowState("Unfollow");
+//        }
+//        else {
+//            setFollowState("Follow");
+//        }
+//
+//    }
+//
+//    // This is the HTML code for the button
+//    return (
+//        <button className="btn btn-primary" onClick={updateFollowState}>{isFollowing}</button>
+//    );
+//}
+//
+//// This renders the button
+//ReactDOM.render(<Follow_or_unfollow />, document.querySelector("#follow_or_unfollow"));
+//
 
 
 /* This will let me test if my React code works (source: 
