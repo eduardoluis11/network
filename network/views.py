@@ -4,6 +4,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+# This will let me send and receive JSON data (source: my "mail" homework assignment)
+from django.http import JsonResponse
+
 # This Imports all the models
 from .models import User, Post, Follower, Like
 
@@ -293,8 +296,68 @@ I will need to make a call to the database before doing anything else. So, I wil
 followers, and one for all of the people that are being followed. This could be very similar to the code that I wrote 
 for displaying the number of followers for a user.
 
+I will first try following and unfollowing a user via a fetch() call by using vanilla JS. Afterwards, I will “translate” that 
+code into React. The disadvantage of doing this is that, at first, the follower count won’t be updated. However, I can later 
+re-do the “update follower count” by using another fetch() call to fix that, if I want to. 
+
+Apparently, it doesn’t matter if I use a “submit” or a “onclick”: if I use a proper fetch() call, only a small part of the 
+page will be updated.
+
+I need 2 conditions on the API (on the follow() view) when detecting if the user clicked on the button: 1) detect if the user 
+is following the person of the profile. If they are not, I will insert the logged user and the person of the profile in the 
+Follower table in the database. 2) If the user’s already following the other person, I will stop following the other person. 
+To do that, I will remove the logged user and the person of the profile from the Follower table. 
+
+And remember to convert the data from the follow() view into JSON. I need to review the “mail” homework assignment. This is done 
+when rendering the page in the follow() view. To convert the view code into JSON, I need to use code like the following (source 
+of the code: my submission for the “mail” homework assignment):
+
+    return JsonResponse([email.serialize() for email in emails], safe=False)
+
+The rest of the code for the follow() view should have standard python code for a view.
+
+I could try sending an empty POST request using a fetch() call. Then on the follow() view, I would check who the logged user is, 
+and the username of the profile page. I can get the person of the profile from using “<str:” and a second parameter in the 
+follow() view. Then, I would put an “if” statement checking if a POST request was sent. If it was, and the user is NOT following 
+the person, I will put a Query Set statement. Otherwise, I will put another Query Set Statement. The queries will modify the 
+Follower table.
+	
+Afterwards, I will send JSON data into the route (the URL that will only contain JSON code, which the user should not be able 
+to access unless they manually type it on the URL bar.) That JSON code that was sent from the view will show the Follower table, 
+and show if the current user and if the person of the profile are on the same entry. Then, by using an “if” statement on the 
+fetch() call, I will check if the user is following the person on the profile. If they are, I will render the “unfollow” 
+button. If they aren’t, I will render the “follow” button.
+	
+OR, to simplify matters, I will simply send one made-up JSON variable into the URL of the follow() view. I could call that 
+variable “renderFollowButton”, and it could be a Boolean. If it’s true, I will render “Follow” in the button. Otherwise, I will 
+render “Unfollow”. The JSON variable that I could send from the follow() view could be like this (source: “mail” homework):
+
+    return JsonResponse({"variable_name": True/False }, status=200)
+	
+So, if I entered into “username/profile/follow”, I would only see a JS array saying “True” or “False”.
+
+Then, by using the fetch() call, I would make the “if” statement to render “Follow/Unfollow”, depending on whether the variable 
+says “True/False”. The “True/False” value would be stored in the “data” variable in the fetch() function. So, I will render 
+“Follow” if data is equal to “True”, or “Unfollow” if it’s equal to “False”.
+
+I think the most appropriate request for the “Follow/Unfollow” mechanic will be a POST request. Since whether a user can follow 
+or unfollow another specific user is different for every user and should be private, then a POST request would be the most 
+appropriate one.
+
+To check whether a POST request was made from the profile.html file, I will use the following code snippet (source: my “mail” 
+homework assignment):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+The user should be logged in other to follow or unfollow someone. So,, I’ll put a login decorator to the follow() view.
+
+To delete a record from the database by using Query Set, I need to use the “.delete()” function (source: Wolph's reply from 
+https://stackoverflow.com/questions/3805958/how-to-delete-a-record-in-django-models .)
+
 """
+@login_required
 def follow(request, username):
+
     # Check if the username exists
     try:
         existing_username = User.objects.get(username=username)
@@ -303,8 +366,54 @@ def follow(request, username):
             "error_message": "Error: That username does not exist."
         })
 
-    # # This obtains the number of people that the user is following
-    # number_of_people_that_user_follows = Follower.objects.filter(follower=existing_username)
-    #
-    # # This obtains the number of followers of the user in the profile
-    # number_of_followers = Follower.objects.filter(follows=existing_username)
+    # This prints an error if the user accesses this URL without a POST request
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+
+    logged_user = request.user  # This stores the logged user
+
+    # Instance of the person of the profile page
+    profile_person = User.objects.get(username=existing_username)
+
+    # This checks whether the user is following the person in the profile in the Follower table
+    is_user_following_query_set = Follower.objects.filter(follower=logged_user, follows=profile_person)
+
+    # If the user's not following the profile person, I will insert them into the database to follow them
+    if not is_user_following_query_set:
+
+        # This prepares the data before inserting it into the database
+        follow_user = Follower(follower=logged_user, follows=profile_person)
+
+        # This inserts the data into the database
+        follow_user.save()
+
+        # Confirmation message
+        follow_success_message = "You're now following this user!"
+
+        # I will print the success message in the console
+        print(follow_success_message)
+
+        # This will change the button to "Unfollow" after inserting the user in the Follower table
+        return JsonResponse({
+            "renderFollowButton": False
+            # "follow_success_message": follow_success_message
+        }, status=200)
+
+    # If the user's already following the profile person, they will be deleted from the Follower table
+    else:
+        # This deletes the entry in which the user is following the person in the profile
+        is_user_following_query_set.delete()
+
+        # Confirmation message
+        follow_success_message = "You are no longer following this user."
+        print(follow_success_message)
+
+
+        # This will change the button to "Follow" after deleting the user from the Follower table
+        return JsonResponse({"renderFollowButton": True}, status=200)
+
+    # If the user enters the page without making a POST request, this might render as an alternative error message
+    return JsonResponse({
+        "error": "The button won't say either 'Follow' nor 'Unfollow' for the time being." 
+    }, status=400)

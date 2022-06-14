@@ -53,14 +53,21 @@
         delete the <input> tags. Also, they will be activated with an onClick(), NOT with an onsubmit. That’s so I
         don’t reload the entire page when I click on the “Follow/Unfollow” button.
 
+        I will put the button outside of the React div. The React div will be empty, and won’t render anything until
+        the user clicks on the “follow” button. Then, if the user clicks on the button, one of 2 things will happen
+        with an “if” statement: 1) I will get the original button, delete it, and rebuild it, but this time, it will
+        display the word “unfollow”. 2) The same as the previous condition, but I will render the word “follow”.
+
         -->
         {% if user.is_authenticated and is_follow_active == True %}
 
-        <div>
-            <button id="follow_or_unfollow" class="btn btn-primary" onClick="Follow_button_test()">
+            <!-- Follow/Unfollow button -->
+            <button id="follow_or_unfollow" class="btn btn-primary" onClick="updateFollowState()">
                 {{follow_button_text}}
             </button>
-        </div>
+
+            <!-- This div will execute React code -->
+            <!-- <div id="follow_unfollow_container"></div> -->
 
             <!-- DEBUG message -->
 <!--            <p>{{username}}</p>-->
