@@ -12,7 +12,10 @@
         <p style="color: red;"><b>{{error_message}}</b></p>
 
     {% else %}
-        <h1>{{username}}'s Profile Page</h1>
+        <!-- I added a <span> to the username of the person in the profile to access their username to 
+        use it in the fetch() function without having to use Jinja code. This will make it easier for
+        me to access the profile's username if I change my JS code into React. -->
+        <h1><span id="person_profile">{{username}}</span>'s Profile Page</h1>
         <br>
         <br>
 
@@ -72,7 +75,7 @@
         {% if user.is_authenticated and is_follow_active == True %}
 
             <!-- Follow/Unfollow button -->
-            <button id="follow_or_unfollow" class="btn btn-primary" onClick="updateFollowState('{{username}}')">
+            <button id="follow_or_unfollow" class="btn btn-primary" onClick="updateFollowState()">
                 {{follow_button_text}}
             </button>
 
@@ -192,12 +195,18 @@
     https://bobbyhadz.com/blog/javascript-referenceerror-true-false-is-not-defined#:~:text=This%20causes%20the%20JavaScript%20engine,false%20booleans%20in%20all%20lowercase. 
     ). I was typing “True” with uppercase letters.
 
+    I will modify the code to get the profile's username from a <span> tag in the <h1> title of the page, so that I don't
+    need to plug in the username directly by using Jinja. This way, if I use React, I wont have to plug in code in Jinja 
+    into React, which would cause me trouble.
+
     -->
     <script>
 
-        function updateFollowState(person_profile) {
+        function updateFollowState() {
             // console.log("You just clicked the 'follow' button");
 
+            // This gets the profile's username from the <span> in the <h1> tag
+            person_profile = document.getElementById("person_profile").innerHTML
 
             fetch(`/profile/${person_profile}/follow`, {
                 method: 'POST'    
