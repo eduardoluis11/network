@@ -360,6 +360,11 @@ https://stackoverflow.com/questions/3805958/how-to-delete-a-record-in-django-mod
 I will temporarily use "CSRF Exempt" to remove the CSRF protection to see if the CSRF protection is causing bugs 
 in my JS code. I will later re-add the CSRF protection.
 
+I will have to rebuild the button from scratch using React. I will also have to edit the follow() view so that, if the user enters the profile page, 
+the “follow” or “unfollow” button will be rendered by using fetch(), NOT Jinja nor Django. To do that, I will modify the follow() view so that, if no 
+POST request is sent, if the user’s following the person, JSON will send “true” and will render the “follow” button. Otherwise, it will send “false” 
+in JSON and render “Unfollow”. That way, I won’t need to use Jinja to render the 1st time the “Follow” button.
+
 """
 @csrf_exempt
 @login_required
@@ -374,8 +379,8 @@ def follow(request, username):
         })
 
     # This prints an error if the user accesses this URL without a POST request
-    if request.method != "POST":
-        return JsonResponse({"error": "POST request required."}, status=400)
+    # if request.method != "POST":
+    #     return JsonResponse({"error": "POST request required."}, status=400)
 
 
     logged_user = request.user  # This stores the logged user
@@ -385,6 +390,18 @@ def follow(request, username):
 
     # This checks whether the user is following the person in the profile in the Follower table
     is_user_following_query_set = Follower.objects.filter(follower=logged_user, follows=profile_person)
+
+    # If the user enters the page and doesn't click on the "follow" button, this will automatically render the button
+    if request.method != "POST":
+
+        # If the user's not following the profile person, I will render the "follow" button
+        if not is_user_following_query_set:
+            return JsonResponse({"renderFollowButton": True}, status=200)
+
+        # If the user's already following the person, I will render the "Unfollow" button
+        else:
+            return JsonResponse({"renderFollowButton": False}, status=200)
+
 
     # If the user's not following the profile person, I will insert them into the database to follow them
     if not is_user_following_query_set:
