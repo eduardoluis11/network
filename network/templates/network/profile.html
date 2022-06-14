@@ -173,6 +173,9 @@
     BUG FIX: I think I see the mistake: I SHOULDN’T use a POST request when using the 1st fetch() call in my React component, since that would be the equivalent 
     of pressing the follow button infinite times. I don’t want that. The 1st fetch() call will only tell me whether the logged user is following the 
     other person by checking the database.
+
+    Now, I will make the React button to insert or remove the user into the Follower table. This will be done by making another fetch() call when the user 
+    clicks on the React button. This will be done by creating a new function within the React component that renders the button. 
     
     -->
     <script type="text/babel">
@@ -187,7 +190,7 @@
             const [isFollowing, setFollowState] = React.useState("Undecided");
 
             // This will get the current word that's being displayed on the "follow/unfollow" button
-        //    currentButtonState = document.querySelector("#follow_or_unfollow")
+            //    currentButtonState = document.querySelector("#follow_or_unfollow")
 
             // This gets the profile's username from the <span> in the <h1> tag
             person_profile = document.getElementById("person_profile").innerHTML
@@ -215,6 +218,36 @@
                 }
 
             })
+
+            // This will toggle the button to "follow" or "unfollow" if the user clicks on it
+            function updateFollowStateReact() {
+
+                fetch(`/profile/${person_profile}/follow`, {
+                    method: 'POST'    
+                })
+                .then((response) => response.json())  // This creates the JSON data
+                .then((data) => {
+                    // All the JS code that I want to execute
+                    
+                    console.log("This is being rendered with React");
+
+                    // This stores the JSON 'true' or 'false' values that tell me whether to render the button
+                    // renderFollowButtonReact = data.renderFollowButton
+
+
+
+                    // This will write "Follow" on the button if the user isn't followign the user
+                    if (data.renderFollowButton == true) {
+                        setFollowState("Follow");
+                    }
+                    // This will write "Unfollow" on the button if the user is following the other person
+                    else {
+                        setFollowState("Unfollow");
+                    }
+
+                })
+
+            }
 
             // This prevents the 1st fetch() call from running endlessly (so that it runs only once)
             // useEffect(() => {
@@ -279,8 +312,9 @@
             // a bug in the browser's console
 
             // This will render the "Follow/Unfollow" button when the user first enters the page
+            // This will render the fully functional "follow" button by using React
             return (
-                <button id="follow_or_unfollow_react" class="btn btn-primary">
+                <button id="follow_or_unfollow_react" class="btn btn-primary" onClick={updateFollowStateReact}>
                     {isFollowing}
                 </button>
             );
