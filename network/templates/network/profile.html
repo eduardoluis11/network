@@ -184,6 +184,14 @@
     one of the views (from the profile() view to be specific). That’s the easiest way to grab a the username of the person in 
     the profile, and send it to the JS function that changes the follow button.
 
+    BUG: The fetch() function for the 'follow' button is almost working perfectly. The only thing is that it has a bug that 
+    prevents the 'follow/unfollow' button to change to 'follow' or 'unfollow' after clicking on it. I need to reload the 
+    entire page to see the button change.
+
+    BUG FIX: Turns out that booleans in JS should be typed in lowercase (source: 
+    https://bobbyhadz.com/blog/javascript-referenceerror-true-false-is-not-defined#:~:text=This%20causes%20the%20JavaScript%20engine,false%20booleans%20in%20all%20lowercase. 
+    ). I was typing “True” with uppercase letters.
+
     -->
     <script>
 
@@ -201,7 +209,7 @@
                 console.log("You just clicked the 'follow' button");
 
                 // This will write "Follow" on the button if the user stops following the other person
-                if (data.renderFollowButton == True) {
+                if (data.renderFollowButton == true) {
                     document.getElementById("follow_or_unfollow").innerHTML = "Follow";
                 }
                 // This will write "Unfollow" on the button if the user starts following the other person
