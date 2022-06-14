@@ -75,12 +75,12 @@
         -->
         {% if user.is_authenticated and is_follow_active == True %}
 
-            <!-- Follow/Unfollow button -->
-            <button id="follow_or_unfollow" class="btn btn-primary" onClick="updateFollowState()">
+            <!-- Jinja/Django "Follow/Unfollow" button -->
+            <!-- <button id="follow_or_unfollow" class="btn btn-primary" onClick="updateFollowState()">
                 {{follow_button_text}}
-            </button>
+            </button> -->
 
-            <!-- This div will execute the React "follow" button -->
+            <!-- This generates the React "Follow/Unfollow" button -->
             <div id="follow_unfollow_container"></div>
 
             <!-- DEBUG message -->
