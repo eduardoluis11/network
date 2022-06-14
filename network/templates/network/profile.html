@@ -58,11 +58,21 @@
         with an “if” statement: 1) I will get the original button, delete it, and rebuild it, but this time, it will
         display the word “unfollow”. 2) The same as the previous condition, but I will render the word “follow”.
 
+        I changed my mind, and decided to first render the follow button using JS. Afterwards, I will render it by using
+        React. I will add the script at the bottom of the page. To call the JS script, I will add an ID to the "follow"
+        button.
+
+        After thinking things through, it’s best to initially render the “follow” button via Django, since, when I first 
+        enter the page, my JS code has no way of knowing if the user is following the other person or not. So, I won’t 
+        know whether to initially render “follow” or “unfollow” in the button. That could be fixed afterwards, but, for 
+        the time being, I will combine Jinja and Django with JS and JSON.
+
+        I added Jinja notation to the button to insert the name of the person from the profile. I need that to use the API.
         -->
         {% if user.is_authenticated and is_follow_active == True %}
 
             <!-- Follow/Unfollow button -->
-            <button id="follow_or_unfollow" class="btn btn-primary" onClick="updateFollowState()">
+            <button id="follow_or_unfollow" class="btn btn-primary" onClick="updateFollowState('{{username}}')">
                 {{follow_button_text}}
             </button>
 
@@ -135,5 +145,72 @@
 
     {% endif %}
 
+    <!-- JS script for handling the "follow/unfollow" functionality. This will later be replaced by React code.
+    
+    I will first try following and unfollowing a user via a fetch() call by using vanilla JS. Afterwards, I will “translate” 
+    that code into React. The disadvantage of doing this is that, at first, the follower count won’t be updated. However, I 
+    can later re-do the “update follower count” by using another fetch() call to fix that, if I want to. 
+
+    Apparently, it doesn’t matter if I use a “submit” or a “onclick”: if I use a proper fetch() call, only a small part of 
+    the page will be updated.
+
+    Remember that, if the database needs to wait a bit before being updated, I can simply add a “timeout” function to wait for 
+    a few seconds before updating the part of the page that I want to update.
+
+    I won’t necessarily have to specify “json.stringify” if I’m not getting any user input to send to the follow() view from the 
+    profile page. So, just by making the fetch() call I will already send JSON data into the follow() view.
+	
+    Anyways, to make this call, it would be best to use a POST request. So, I will have to manually specify the POST request on 
+    the fetch() call on the .html file.
+
+    If I entered into “username/profile/follow”, I would only see a JS array saying “True” or “False”.
+	
+    Then, by using the fetch() call, I would make the “if” statement to render “Follow/Unfollow”, depending on whether the 
+    variable says “True/False”. The “True/False” value would be stored in the “data” variable in the fetch() function. So, I 
+    will render “Follow” if data is equal to “True”, or “Unfollow” if it’s equal to “False”.
+	
+    To call the JSON data by using JS in the .html file, I would need to use the “.” notation to call the variable that I want. 
+    That is, I would need to use notation like the following:
+        data.variable_that_I_want_to_access
+	
+    In my case, I could execute code like the following: “data.renderFollowButton”. Basically, JSON is behaving like Django’s 
+    Jinja notation.
+
+    Remember that, to create a JS function, I need to first type the word “function”. That fixed a bug that didn’t let me 
+    execute the updateFollowState JS function.
+
+    Now, to use fetch(), I will have to somehow grab the name of the person of the profile using JS, and plug that in into 
+    the JS function. I could send it via a parameter from the button, and that parameter could come from Jinja notation from 
+    one of the views (from the profile() view to be specific). That’s the easiest way to grab a the username of the person in 
+    the profile, and send it to the JS function that changes the follow button.
+
+    -->
+    <script>
+
+        function updateFollowState(person_profile) {
+            // console.log("You just clicked the 'follow' button");
+
+
+            fetch(`/profile/${person_profile}/follow`, {
+                method: 'POST'    
+            })
+            .then((response) => response.json())  // This creates the JSON data
+            .then((data) => {
+                // All the JS code that I want to execute
+                
+                console.log("You just clicked the 'follow' button");
+
+                // This will write "Follow" on the button if the user stops following the other person
+                if (data.renderFollowButton == True) {
+                    document.getElementById("follow_or_unfollow").innerHTML = "Follow";
+                }
+                // This will write "Unfollow" on the button if the user starts following the other person
+                else {
+                    document.getElementById("follow_or_unfollow").innerHTML = "Unfollow";
+                }
+
+            })
+        }
+    </script>
 
 {% endblock %}

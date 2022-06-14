@@ -7,6 +7,9 @@ from django.urls import reverse
 # This will let me send and receive JSON data (source: my "mail" homework assignment)
 from django.http import JsonResponse
 
+# This adds the "CSRF exempt" function (source: my "mail" homework assignment)
+from django.views.decorators.csrf import csrf_exempt
+
 # This Imports all the models
 from .models import User, Post, Follower, Like
 
@@ -354,7 +357,11 @@ The user should be logged in other to follow or unfollow someone. So,, I’ll pu
 To delete a record from the database by using Query Set, I need to use the “.delete()” function (source: Wolph's reply from 
 https://stackoverflow.com/questions/3805958/how-to-delete-a-record-in-django-models .)
 
+I will temporarily use "CSRF Exempt" to remove the CSRF protection to see if the CSRF protection is causing bugs 
+in my JS code. I will later re-add the CSRF protection.
+
 """
+@csrf_exempt
 @login_required
 def follow(request, username):
 
