@@ -7,4 +7,28 @@
 
     <h1>Posts From Your Favorite Users</h1>
 
+    <!-- This will compare all the posts with all the favorite users of the logged user. If the post
+    belongs to that favorite user, their post will be rendered. That is, only the posts from the user's favorite
+    accounts will be rendered. -->
+    {% for post in all_posts %}
+        {% for favorite_user in favorite_users_query %}
+
+            {% if post.user == favorite_user.follows %}
+                <div class="card mb-3">
+                    <a href="profile/{{post.user}}"><b>{{post.user}}</b></a>
+                    <p>{{post.body}}</p>
+                    <p>{{post.timestamp}}</p>
+                    <p>❤ {{post.number_of_likes}}</p>
+                    <br>
+                </div>
+                <!-- DEBUG msg: this prints the name of the favorite user -->
+<!--                {{favorite_user.follows}} -->
+
+<!--                <br>-->
+            {% endif %}
+
+
+        {% endfor %}
+    {% endfor %}
+
 {% endblock %}

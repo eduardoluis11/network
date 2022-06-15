@@ -445,7 +445,61 @@ def follow(request, username):
 """ 'Following' page view.
 
 I will add the "login required" decorator, since only logged users should be able to see this view.
+
+To get all of the posts, I will use code similar to that of the index page. I will need to use a Query Set statement 
+with the filter() function, instead of the all() one. The condition should be to look for all of the users that the 
+logged user is following, and then fetch their posts. If it’s like in real social media apps, the posts should be in 
+reverse chronological order.
+
+To get the posts from the people that the logged user is following, I will need to 1st check the Follower table. I will 
+need all instances where the logged user is present in the “follower” column. From those instances, I want all of the 
+users present in the “follows” column.
+	
+Afterwards, I will get all fo the posts made by people whose user ID is in the group of people that are in the “follows” 
+column for the logged user. I may need to use an array for this. Let me see if I can make a JOIN statement or a 
+subquery using Query Set.
+	
+To do the query that I need to do, a subquery will suffice. Here’s how to make a subquery in Query Set (source: 
+Ramast’s reply from https://stackoverflow.com/questions/8556297/how-to-subquery-in-queryset-in-django .) 
+
+The sub query should work like this: “Give me all of the posts whose authors belong to the ‘follows’ column who are 
+being followed by the logged user.” Translated into Query Set notation, the query would be like this:
+    favorite_users_query = Follower.objects.filter(follower=logged_user_id).only('follows')
+    posts_from_favorite_users = Post.objects.filter(user__in=favorite_users_query)
+
+Turns out that I can’t access a foreign key with Query Set in the way I was trying to. Instead, I will need to use the 
+“User” table to access the followers from the “Follower” table, and use notation like this  (source: alecxe's reply on 
+https://stackoverflow.com/questions/27884129/django-queryset-foreign-key ):
+    FK_Table.objects.filter(fk_variable__original_variable='variable_value')
+
 """
 @login_required
 def following_page(request):
-    return render(request, "network/following.html")
+
+    logged_user = request.user  # This gets the data from the logged user
+    logged_user_id = logged_user.id  # ID of the user
+
+    # This gets an instance of the logged user
+    user_instance = User.objects.get(id=logged_user_id)
+
+    # This gets all the favorite users of the logged user
+    favorite_users_query = Follower.objects.filter(follower__id=logged_user_id)
+
+    # DEBUG message: this checks if the Query Set with the FK was created
+    print(favorite_users_query)
+
+    # DEBUG: this will let me see each item on the FK Query Set
+    for favorite_user in favorite_users_query:
+        print(favorite_user.id) # This prints "1537"
+        print(favorite_user.follower)  # This prints "sylveon"
+
+    # This gets all the posts from the favorite users of the logged user in reverse chronological order
+    # posts_from_favorite_users = Post.objects.filter(user__in=favorite_user.follows).order_by('-timestamp')
+
+    # This gets all the posts in reverse chronological order
+    all_posts = Post.objects.all().order_by('-timestamp')
+
+    return render(request, "network/following.html", {
+        "all_posts": all_posts,
+        "favorite_users_query": favorite_users_query,
+    })
