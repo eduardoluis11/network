@@ -13,6 +13,9 @@ I could put it in an URL called “/profile/username/follow/” to call the foll
 username of the profile, so that the API knows the name of the user that I should follow or unfollow. To fix it a 
 little bit, the URL should be something like “/profile/<str:username>/follow/”. 
 
+I don’t need to insert the name of the logged user into the URL for the "following_page()" URL, since I can already get 
+the logged user via Django in its respective view. So, I don’t need to inert an extra parameter in the URL. 
+	
 """
 urlpatterns = [
     path("", views.index, name="index"),
@@ -20,6 +23,6 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("profile/<str:username>", views.profile, name="profile"),
-    path("profile/<str:username>/follow", views.follow, name="follow"),
+    path("following", views.following_page, name="following_page"),
 ]
 

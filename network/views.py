@@ -438,6 +438,14 @@ def follow(request, username):
         return JsonResponse({"renderFollowButton": True}, status=200)
 
     # If the user enters the page without making a POST request, this might render as an alternative error message
-    return JsonResponse({
-        "error": "The button won't say either 'Follow' nor 'Unfollow' for the time being." 
-    }, status=400)
+    # return JsonResponse({
+    #     "error": "The button won't say either 'Follow' nor 'Unfollow' for the time being."
+    # }, status=400)
+
+""" 'Following' page view.
+
+I will add the "login required" decorator, since only logged users should be able to see this view.
+"""
+@login_required
+def following_page(request):
+    return render(request, "network/following.html")
