@@ -23,6 +23,8 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("profile/<str:username>", views.profile, name="profile"),
+    path("profile/<str:username>/follow", views.follow, name="follow"),
     path("following", views.following_page, name="following_page"),
+
 ]
 

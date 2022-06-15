@@ -50,8 +50,11 @@
                   <a class="nav-link" href="{% url 'index' %}">All Posts</a>
                 </li>
                 {% if user.is_authenticated %}
+                    <!-- 	Now, I will add the appropriate “href” attribute to the “Following” link on the navbar so
+                    that users can enter the page. But remember: only logged users should be able to see and click the
+                    link. So, I will add a “login” decorator to the “Following” link in the navbar. -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Following</a>
+                        <a class="nav-link" href="{% url 'following_page' %}">Following</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
