@@ -64,11 +64,12 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 	in the navbar. For the navbar, I will grab the username of the logged user. Meanwhile, for the username in the
 	posts, I will use Jinja notation to get the username of that user from the Post table.
 
+    If I'm not logged in, and if I didn't post that post, I shouldn't even be able to see the "Edit" link.
     -->
     {% for post in all_posts %}
         <div class="card mb-3">
             <a href="profile/{{post.user}}"><b>{{post.user}}</b></a>
-            <p>Edit</p>
+<!--            <p>Edit</p>-->
             <p>{{post.body}}</p>
             <p>{{post.timestamp}}</p>
             <p>❤ {{post.number_of_likes}}</p>
