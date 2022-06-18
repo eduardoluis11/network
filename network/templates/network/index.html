@@ -66,7 +66,7 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
     If I'm not logged in, and if I didn't post that post, I shouldn't even be able to see the "Edit" link.
     -->
-    {% for post in all_posts %}
+    {% for post in paginated_posts_in_current_page %}
         <div class="card mb-3">
             <a href="profile/{{post.user}}"><b>{{post.user}}</b></a>
 <!--            <p>Edit</p>-->
@@ -77,6 +77,8 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
         </div>
 
     {% endfor %}
+
+<!--    {{paginated_posts_in_current_page}}-->
 
     <br>
     <br>

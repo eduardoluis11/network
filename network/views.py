@@ -10,6 +10,9 @@ from django.http import JsonResponse
 # This adds the "CSRF exempt" function (source: my "mail" homework assignment)
 from django.views.decorators.csrf import csrf_exempt
 
+# This adds the pagination functionality (source: https://docs.djangoproject.com/en/4.0/topics/pagination/ .)
+from django.core.paginator import Paginator
+
 # This Imports all the models
 from .models import User, Post, Follower, Like
 
@@ -48,11 +51,69 @@ attribute, and add a negative sign if I want the reverse of the default order (s
 https://stackoverflow.com/questions/9834038/django-order-by-query-set-ascending-and-descending  .) I also need to add 
 the name of the column between quotation marks. 
  
+I will call here the custom pagination function that only 10 posts appear in the "All Posts" page.
+
+What I tried to do didn’t work. I will try doing something else that I saw on the Paginator documentation. I will first 
+go to one of the two views in which I will need to paginate the views. Then, I will call the Paginator() call on the 
+variable that stores all of the posts. Then, I will store the page number in a variable that has the following code: 
+    request.GET.get('page')
+
+Next, I will create yes another variable, I which I will call the page number. To do that, I will insert the following 
+snippet inside of the new variable:
+    paginated_variable.get_page(page_number)
+
+Finally, in the return() function of the view(), I will send the variable via Jinja notation.
+
+Source of the code from the previous 3 paragraphs: https://docs.djangoproject.com/en/4.0/topics/pagination/ 
+
+It seems that I need to add the page number as a 2nd parameter in “request.GET.get()” so that I enter into that 
+page, and so it doesn’t print me “None” in the console (source: https://testdriven.io/blog/django-pagination/ .) 
+
+Fixed it: it turns out that I was putting the Jinja code in the return() function of the index() view that is only 
+activated AFTER creating a new post. I should have put the Jinja variable in the return(render) function that renders 
+all the posts in the database. Reading this example repo helped me fix a bug to make my posts show up via Jinja after 
+using the paginator: https://github.com/testdrivenio/django-pagination-example .
+
 """
 def index(request):
 
     # This gets all the posts from the database
     all_posts = Post.objects.all().order_by('-timestamp')
+
+    # This will paginate the posts so that each page has 10 posts
+    paginated_posts = Paginator(all_posts, 10)
+
+    # DEBUG msg: this prints the object that was created when I first called the Paginator class
+    print(paginated_posts)
+
+    # This gets the current paginated page
+    # Prints "None" if I don't specify a page, or "1" if I add "1" as a parameter
+    current_page_number = request.GET.get('page', 1)
+
+    # DEBUG msg
+    print(current_page_number)
+
+    # This gets all the posts of the current page
+    # Prints "<Page 1 of 2>"
+    paginated_posts_in_current_page = paginated_posts.get_page(current_page_number)
+
+    # DEBUG msg
+    print(paginated_posts_in_current_page)
+
+    # Debug msg: this the total number of posts
+    print(paginated_posts.count)    # Prints 11
+
+    # DEBUG msg: This prints how many pages are in total after paginating
+    print(paginated_posts.num_pages)    # Prints 2
+
+    # DEBUG msg: This will print all posts, and the page to which those posts belong to
+    for i in paginated_posts.page_range:
+        print(paginated_posts.page(i))  # Prints page number
+        print(paginated_posts.page(i).object_list)  # Prints posts in that page in a generic object format
+
+        # This prints each post
+        for post in paginated_posts.page(i).object_list:
+            print(post.body)
 
     # This calls the post creation form
     form = CreatePostForm()
@@ -85,10 +146,11 @@ def index(request):
             "all_posts": all_posts,
         })
 
-
+    # I'll try to paginate the posts by calling my paginate function here
     return render(request, "network/index.html", {
         "form": form,
         "all_posts": all_posts,
+        "paginated_posts_in_current_page": paginated_posts_in_current_page,
     })
 
 
@@ -503,3 +565,67 @@ def following_page(request):
         "all_posts": all_posts,
         "favorite_users_query": favorite_users_query,
     })
+
+""" 	Since the question says “on any page that displays posts”, that means that the 
+Paginator functionality should work in both the index() and the follow_page() views. I 
+could either create a separate function for creating the pagination, and then call it in 
+both the index() and follow_page() views; or manually add the pagination in both views. 
+The most efficient solution would be the former.
+
+I’ll define the Paginator function separately, and I will call it in both the index() and follow_page() views before 
+sending the Jinja variable to their respective .html files. To create the Paginator function, I first imported the 
+Paginator library on top of the views file. Then I will create a function using “def”, but without adding a “request” 
+parameter into it (source: https://www.w3schools.com/python/python_functions.asp .) However, I still have to ad a 
+parameter to it, since I will call the variable that contains all of the posts that will be displayed via Jinja on the 
+.html pages.
+	
+So, I will add a parameter to the new function that I’ll create. That parameter will store all of the posts of that 
+page. Next, I will call the Paginator class, and I will insert into it the variable with all of the posts, and the 
+number “10”, since I only want 10 posts per page, and I will insert that into a variable (source: 
+https://docs.djangoproject.com/en/4.0/topics/pagination/ .) So, I would use a snippet like the following:
+    paginated_variable = Paginator(posts, 10)
+	
+Inserting all of the pages in the html files will be tricky. I will need to use 2 “for” loops. The 1st for loop will 
+check how many pages are in total (this will depend on the number of posts.) Then, the 2nd  for loop will store all of 
+the posts in each page. To get the number of pages created, I need to use the following snippet: 
+    paginated_variable.page_range 
+
+Then, to get each individual post, I would need to use the following snippet:
+    paginated_variable.page(number).object_list
+
+So, to get all of the posts from all of the pages, I would need to create 2 for loops, and nest one inside of the other.
+
+I may add “print()” statements to debug my code to see if the correct number of posts are being stored inside of each 
+page.
+
+Once I finish executing the pagination() function, I will call the return() python function so that the index() and 
+follow_page() views get the paginated posts. Source of the snippet that I will use for calling the return function: 
+https://www.w3schools.com/python/ref_keyword_return.asp 
+
+What I tried to do didn’t work. I will try doing something else that I saw on the Paginator documentation. I will first 
+go to one of the two views in which I will need to paginate the views. Then, I will call the Paginator() call on the 
+variable that stores all of the posts. Then, I will store the page number in a variable that has the following code: 
+    request.GET.get('page')
+
+Next, I will create yes another variable, I which I will call the page number. To do that, I will insert the following 
+snippet inside of the new variable:
+    paginated_variable.get_page(page_number)
+
+Finally, in the return() function of the view(), I will send the variable via Jinja notation.
+
+Source of the code from the previous 3 paragraphs: https://docs.djangoproject.com/en/4.0/topics/pagination/ 
+
+"""
+# def paginate(posts):
+#     paginated_posts = Paginator(posts, 10)
+#
+#     # DEBUG msg: this prints the object that was created when I first called the Paginator class
+#     print(paginated_posts)
+#
+#     # This gets the current paginated page
+#     current_page_number = request.GET.get('page')
+#
+#     # This gets all the posts of the current page
+#     page_posts = paginated_posts.get_page(current_page_number)
+#
+#     return page_posts
