@@ -283,6 +283,14 @@ profile() view that says stores either the value “Follow” or “Unfollow”.
 the button via Jinja notation by using notation like this:
     <button>{{variable_that_says_follow_unfollow}}</button>
 
+Now, I need to paginate the posts whenever I enter into the profile of any person. That is, if I click the username of 
+any user, I should only be able to see 10 of their posts. If I want to see more, I will need to click on “see more in 
+page 2”. To do this, I will have to edit the profile() view.
+	
+I’ll need to check how I’m fetching the posts in the profile() view though, since I may get the same bug in profile() 
+that I had in following_page(): that if a post doesn’t appear in the home page, that it won’t be rendered either in the 
+profile page for that specific user, even if that user has posted less than 10 posts.
+
 """
 def profile(request, username):
 
@@ -341,6 +349,18 @@ def profile(request, username):
     # This gets all the posts from the username that's displayed on the profile page
     all_posts_from_user = Post.objects.filter(user=existing_username).order_by('-timestamp')
 
+
+    # This will paginate the posts so that each page has 10 posts
+    paginated_posts = Paginator(all_posts_from_user, 10)
+
+    # This gets the current paginated page
+    # Prints "None" if I don't specify a page, or "1" if I add "1" as a parameter
+    current_page_number = request.GET.get('page', 1)
+
+    # This gets all the posts of the current page
+    # Prints "<Page 1 of 2>"
+    paginated_posts_in_current_page = paginated_posts.get_page(current_page_number)
+
     return render(request, "network/profile.html", {
         "username": existing_username,
         "error_message": error_message,
@@ -351,6 +371,7 @@ def profile(request, username):
         "is_user_following_profile": is_user_following_profile,
         "is_user_following_query_set": is_user_following_query_set,
         "follow_button_text": follow_button_text,
+        "paginated_posts_in_current_page": paginated_posts_in_current_page,
 
     })
 
