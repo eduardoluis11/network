@@ -534,6 +534,25 @@ Turns out that I can’t access a foreign key with Query Set in the way I was tr
 https://stackoverflow.com/questions/27884129/django-queryset-foreign-key ):
     FK_Table.objects.filter(fk_variable__original_variable='variable_value')
 
+Now, I just need to repeat the same pagination code for the posts in the follow_page() view as he one used in the 
+index() view.
+
+BUG: I have a bug with the following_page() view with the Paginator: to put it with an example, the user “sylveon” has 
+at least 3 posts, and the 1st one says “Hello World”. However, that “Hello World” post never shows up in the “Following” 
+page. That makes sense in the home page, since there are 11 posts in total, and “Hello World” was the 1st post in the 
+web app. So, only 10 posts are properly showing up in the home page. However, if I only follow Sylveon, it doesn’t make 
+sense that her “Hello World” post doesn’t show up, since Sylveon only has 3 posts in total. That happens because the 
+pagination code is being executed the same as in the index() view. 
+
+That happens because of the way that I’m printing the posts in the “Following” page: I’m using 2 “for” loops, but only 
+via Jinja. Instead, I should create an array, and use the 2 “for” loops inside of the “following_page()” view to 
+populate the array with the posts from the users that you’re following. Then, I should paginate the posts inside of 
+that array. THEN, I should send that array with those posts via Jinja.  
+
+I need to append to the array each post of the favorite users. The notation to append values to a Python list is:
+    array.append(value_that_I_want_to_insert)
+(source: my "commerce" homework assignment.)
+
 """
 @login_required
 def following_page(request):
@@ -543,6 +562,9 @@ def following_page(request):
 
     # This gets an instance of the logged user
     user_instance = User.objects.get(id=logged_user_id)
+
+    # This will be populated with the 10 posts from the user's favorite accounts
+    favorite_users_posts_array = []
 
     # This gets all the favorite users of the logged user
     favorite_users_query = Follower.objects.filter(follower__id=logged_user_id)
@@ -561,9 +583,39 @@ def following_page(request):
     # This gets all the posts in reverse chronological order
     all_posts = Post.objects.all().order_by('-timestamp')
 
+    # This will read all the posts from the user's favorite accounts, and then insert them in an array
+    for post in all_posts:
+        for favorite_user in favorite_users_query:
+            if post.user == favorite_user.follows: 
+                favorite_users_posts_array.append(post)
+
+
+
+    # This will paginate the posts so that each page has 10 posts
+    # paginated_posts = Paginator(all_posts, 10)
+
+    # This will paginate the posts stored in the array
+    paginated_posts = Paginator(favorite_users_posts_array, 10)
+
+    # DEBUG msg: this prints the object that was created when I first called the Paginator class
+    print(paginated_posts)
+
+    # This gets the current paginated page
+    # Prints "None" if I don't specify a page, or "1" if I add "1" as a parameter
+    current_page_number = request.GET.get('page', 1)
+
+    # DEBUG msg
+    print(current_page_number)
+
+    # This gets all the posts of the current page
+    # Prints "<Page 1 of 2>"
+    paginated_posts_in_current_page = paginated_posts.get_page(current_page_number)
+
+
     return render(request, "network/following.html", {
         "all_posts": all_posts,
         "favorite_users_query": favorite_users_query,
+        "paginated_posts_in_current_page": paginated_posts_in_current_page,
     })
 
 """ 	Since the question says “on any page that displays posts”, that means that the 
