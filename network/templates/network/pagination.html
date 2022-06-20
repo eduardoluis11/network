@@ -6,7 +6,12 @@ I’ll look at the webpage where I found a repo that gives me an example of a pa
 First, it seems that I should create an HTML file exclusively for storing the “previous” and “next” pages. The website
 that I mentioned above recommends that I call that file “pagination.html,” so I will do so.
 
+I need to implement this from the “Hints” section: “Bootstrap’s Pagination features may be helpful for displaying pages
+on the front-end (in your HTML).” That is, I need to use Bootstrap to make my pagination links to look better. The
+Bootstrap code is located here: https://getbootstrap.com/docs/4.4/components/pagination/
+
 -->
+
 <!-- DEBUG -->
 <!--<p>This will contain the pagination pages</p>-->
 
@@ -17,15 +22,30 @@ variables send the user to the previous and next pages, and show the user the to
 Source of this code snippet: https://testdriven.io/blog/django-pagination/
 -->
 <div>
-  <span>
-    {% if paginated_posts_in_current_page.has_previous %}
-      <a href="?page={{ paginated_posts_in_current_page.previous_page_number }}">Previous</a>
-    {% endif %}
-    <span>
-      Page {{ paginated_posts_in_current_page.number }} of {{ paginated_posts_in_current_page.paginator.num_pages }}.
-    </span>
-    {% if paginated_posts_in_current_page.has_next %}
-      <a href="?page={{ paginated_posts_in_current_page.next_page_number }}">Next</a>
-    {% endif %}
-  </span>
+  <nav aria-label="Page navigation example">
+<!--    <span>-->
+
+    <ul class="pagination">
+      {% if paginated_posts_in_current_page.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ paginated_posts_in_current_page.previous_page_number }}">Previous</a>
+        </li>
+      {% endif %}
+<!--      <span>-->
+
+      <li class="page-item">
+        Page {{ paginated_posts_in_current_page.number }} of {{ paginated_posts_in_current_page.paginator.num_pages }}
+      </li>
+      <!--      </span>-->
+
+      {% if paginated_posts_in_current_page.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ paginated_posts_in_current_page.next_page_number }}">Next</a>
+        </li>
+      {% endif %}
+    </ul>
+
+
+<!--    </span>-->
+  </nav>
 </div>
