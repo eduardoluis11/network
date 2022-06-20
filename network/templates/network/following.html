@@ -9,7 +9,11 @@
 
     <!-- This will compare all the posts with all the favorite users of the logged user. If the post
     belongs to that favorite user, their post will be rendered. That is, only the posts from the user's favorite
-    accounts will be rendered. -->
+    accounts will be rendered. 
+
+    I will end up rendering the post from an array that I created in the views.py file, which already gets the posts
+    from the favorite accounts of the logged user. This fixes the bug that prevented my from fetching a post if
+    that psot wasn't visible in the "All Posts" page. -->
     {% for post in paginated_posts_in_current_page %}
         <div class="card mb-3">
             <a href="profile/{{post.user}}"><b>{{post.user}}</b></a>

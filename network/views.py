@@ -74,6 +74,11 @@ activated AFTER creating a new post. I should have put the Jinja variable in the
 all the posts in the database. Reading this example repo helped me fix a bug to make my posts show up via Jinja after 
 using the paginator: https://github.com/testdrivenio/django-pagination-example .
 
+BUG: Whenever I post a post, all posts disappear. They only reappear when I go back to the home page. 
+
+BUG FIX: I just needed to add the Jinja variable that stored the paginated posts in the "if" statement that
+creates a new post.
+
 """
 def index(request):
 
@@ -144,6 +149,7 @@ def index(request):
             "form": form,
             "post_creation_success_message": post_creation_success_message,
             "all_posts": all_posts,
+            "paginated_posts_in_current_page": paginated_posts_in_current_page,
         })
 
     # I'll try to paginate the posts by calling my paginate function here
