@@ -82,5 +82,37 @@
         I will add the "babel" attribute to it so that the browser is able to interpret the React code 
         (source: https://youtu.be/jrBhi8wbzPw .) -->
         <!-- <script type="text/babel" src="{% static 'network/script.js' %}"></script> -->
+
+        <!-- To show the links to the “previous” and “next” pages on the footer of the pages with posts, I will use this
+        to call the pagination.html template (https://testdriven.io/blog/django-pagination/ ):
+        -->
+
+
+        <!-- The above didn’t work, but it’s not necessary either. There are other ways to do this. I could simply
+        repeat the chunk of code that contains the pagination code into the index(), profile(), and following_page()
+        views. That way, I won’t need to use the pagination.html file. However, this isn’t the efficient way of doing
+        this. So, I will try to add this code in layout.html once, but it may not work if it doesn’t detect the proper
+        Jinja variable that contains the paginated code.
+
+        For the time being, I will include this code manually in the index(), following_pages(), and profile()
+        views, since, if I include this in the layout.html file, this will appear everywhere (including the longin
+        page.)
+
+        Source of this code snippet: https://testdriven.io/blog/django-pagination/
+        -->
+<!--        <div>-->
+<!--          <span>-->
+<!--            {% if page_obj.has_previous %}-->
+<!--              <a href="?page={{ page_obj.previous_page_number }}">Previous</a>-->
+<!--            {% endif %}-->
+<!--            <span>-->
+<!--              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.-->
+<!--            </span>-->
+<!--            {% if page_obj.has_next %}-->
+<!--              <a href="?page={{ page_obj.next_page_number }}">Next</a>-->
+<!--            {% endif %}-->
+<!--          </span>-->
+<!--        </div>-->
+
     </body>
 </html>

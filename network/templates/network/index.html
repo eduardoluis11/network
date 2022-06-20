@@ -86,11 +86,19 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     https://youtu.be/jrBhi8wbzPw  -->
     <div id="react-test"></div>
 
+
+
     <!-- DEBUG code: This will test if my code is actually detecting JS code -->
 <!--    <script>-->
 <!--        console.log("This JS code was executed directly into the index.html file.")-->
 <!--    </script>-->
 
+    <!-- To show the links to the “previous” and “next” pages on the footer of the pages with posts, I will use this
+    to call the pagination.html template (https://testdriven.io/blog/django-pagination/ ).
+
+    To make it work, I needed to add "network/" in front of "pagination.html".
+    -->
+	{% include "network/pagination.html" %}
 
 {% endblock %}
 
@@ -102,3 +110,8 @@ the React code (source: https://youtu.be/jrBhi8wbzPw .) -->
 <!-- {% block script %}
     <script src="{% static 'network/network_script.js' %}"></script>
 {% endblock %} -->
+
+    <!-- To show the links to the “previous” and “next” pages on the footer of the pages with posts, I will use this
+    to call the pagination.html template (https://testdriven.io/blog/django-pagination/ ):
+    -->
+<!--	{% include "pagination.html" %}-->

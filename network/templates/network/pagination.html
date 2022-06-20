@@ -1,0 +1,31 @@
+<!-- This stores the "previous" and "next" pages from the paginated pages.
+
+I’ll look at the webpage where I found a repo that gives me an example of a paginated page to see how to create the
+“next” and “previous” pages, which is located at this source: https://testdriven.io/blog/django-pagination/
+
+First, it seems that I should create an HTML file exclusively for storing the “previous” and “next” pages. The website
+that I mentioned above recommends that I call that file “pagination.html,” so I will do so.
+
+-->
+<!-- DEBUG -->
+<p>This will contain the pagination pages</p>
+
+<!-- This will add the "next" and "previous" links. I need the Jinja variable that has the paginated posts in here.
+The "previous_page_number", "paginator.num_pages", and "has_next" are properties of paginated variables. These
+variables send the user to the previous and next pages, and show the user the total number of pages.
+
+Source of this code snippet: https://testdriven.io/blog/django-pagination/
+-->
+<div>
+  <span>
+    {% if paginated_posts_in_current_page.has_previous %}
+      <a href="?page={{ paginated_posts_in_current_page.previous_page_number }}">Previous</a>
+    {% endif %}
+    <span>
+      Page {{ paginated_posts_in_current_page.number }} of {{ paginated_posts_in_current_page.paginator.num_pages }}.
+    </span>
+    {% if paginated_posts_in_current_page.has_next %}
+      <a href="?page={{ paginated_posts_in_current_page.next_page_number }}">Next</a>
+    {% endif %}
+  </span>
+</div>
