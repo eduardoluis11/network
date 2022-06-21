@@ -94,6 +94,7 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     instead of hardcoding some name into the ID, I will use Jinja notation, and I will insert the ID of that post. That
     way, each post will have a different ID, and I will be able to access that ID via JS to edit that specific post.
 
+    I will send via an onclick() event the post's ID number so that my JS code is able to edit that specific post.
     -->
     {% for post in paginated_posts_in_current_page %}
         <div class="card mb-3">
@@ -117,10 +118,10 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     <!--                    <b>Sorry. post.user is NOT a string</b>-->
     <!--                {% endif %}-->
 
-                    <!-- This renders the "Edit" link if the logged user is the author of the post -->
+                    <!-- This renders the "Edit" button if the logged user is the author of the post -->
                     {% if logged_user_string == post.user|stringformat:"s" %}
                         <div>
-                            <button class="btn btn-primary" style="width: 80px; margin:10px 0px;">
+                            <button class="btn btn-primary" style="width: 80px; margin:10px 0px;" onclick="edit('{{post.id}}')">
                                 Edit
                             </button>
                         </div>
@@ -177,9 +178,26 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
 	I will modify the “Edit” link so that it becomes a button, so that it’s easier to handle with JS code.
 
+    Now, whenever the user clicks on the “Edit button”, I will render a <textarea> tag. I can do that by using editing the 
+    innerHTML attribute of the div that contains the ID of that specific post. I can get that <div> by using a 
+    getElementByID selector.
+
     -->
     <script>
 
+        // Edit post mechanic
+        function edit(post_id) {
+
+            // DEBUG msg
+            console.log(`This is post number ${post_id}`)
+
+            // This gets the div with the post's body
+            let post = document.getElementById(`${post_id}`)
+
+            // This renders the <textarea> tag that replaces the post's body
+            post.innerHTML = `<textarea></textarea>`
+            
+        }
     </script>
 {% endblock %}
 
