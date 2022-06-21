@@ -348,8 +348,15 @@ def profile(request, username):
     # This will render the word "follow" or "unfollow" in the button itself
     follow_button_text = ''
 
+    # This declares the variable that will store the logged user's username as a string
+    logged_user_string = ''
+
     # this checks if the user's logged in, and whether if it's the same as the user in the profile page
     if request.user.is_authenticated:
+
+        # This will send the user's username as a string in Jinja
+        logged_user_string = str(request.user)
+
         if str(request.user) == str(existing_username):
             is_follow_active = False
 
@@ -403,6 +410,7 @@ def profile(request, username):
         "is_user_following_query_set": is_user_following_query_set,
         "follow_button_text": follow_button_text,
         "paginated_posts_in_current_page": paginated_posts_in_current_page,
+        "logged_user_string": logged_user_string,
 
     })
 

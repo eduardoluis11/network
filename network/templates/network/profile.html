@@ -139,7 +139,14 @@
         {% for post in paginated_posts_in_current_page %}
             <div class="card mb-3">
                 <a href="/profile/{{post.user}}"><b>{{post.user}}</b></a>
-<!--                <p>Edit</p>-->
+
+                <!-- This renders the "Edit" link if the logged user is the author of the post -->
+                {% if user.is_authenticated %}
+                    {% if logged_user_string == post.user|stringformat:"s" %}
+                        <a href="#">Edit</a>
+                    {% endif %}
+                {% endif %}
+
                 <p>{{post.body}}</p>
                 <p>{{post.timestamp}}</p>
                 <p>❤ {{post.number_of_likes}}</p>
