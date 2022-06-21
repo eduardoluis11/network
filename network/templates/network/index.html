@@ -187,6 +187,14 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     I could insert that variable into the <textarea> being rendered by the double ticks and the innerHTML attribute. To 
     sget the content of the post’s body, I can simply call innerHTML.
 
+    I’m on the right track. However, I’m also getting the <p> tags of the body of that post, which I don’t want. I only want 
+    the text inside those <p> tags. To get them, I will use textContent attribute from JS (source: 
+    https://bobbyhadz.com/blog/javascript-get-text-of-paragraph .) I will use “variable_with_text.textContent” to get only 
+    the text from the post’s body without getting the <p> tags.
+
+    It’s working. Now, I’m getting extra space both before and after the text of the post. To remove it, I’ll try to use 
+    the trim() function from JS (source: https://bobbyhadz.com/blog/javascript-get-text-of-paragraph .)
+
     -->
     <script>
 
@@ -200,7 +208,7 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
             let post = document.getElementById(`${post_id}`)
 
             // This stores the text of the post's body
-            let post_body = post.innerHTML
+            let post_body = post.textContent.trim()
 
             // This renders the <textarea> tag that replaces the post's body
             post.innerHTML = `<textarea>${post_body}</textarea>`
