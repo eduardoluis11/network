@@ -182,6 +182,11 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     innerHTML attribute of the div that contains the ID of that specific post. I can get that <div> by using a 
     getElementByID selector.
 
+    Now, I need to prepopulate the <textarea> that appears with the body of that post. I need to use an API and the fetch() 
+    function for this. Or, to make things simpler, I could simply store the HTML of that div into a variable, and then 
+    I could insert that variable into the <textarea> being rendered by the double ticks and the innerHTML attribute. To 
+    sget the content of the post’s body, I can simply call innerHTML.
+
     -->
     <script>
 
@@ -194,9 +199,12 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
             // This gets the div with the post's body
             let post = document.getElementById(`${post_id}`)
 
+            // This stores the text of the post's body
+            let post_body = post.innerHTML
+
             // This renders the <textarea> tag that replaces the post's body
-            post.innerHTML = `<textarea></textarea>`
-            
+            post.innerHTML = `<textarea>${post_body}</textarea>`
+
         }
     </script>
 {% endblock %}
