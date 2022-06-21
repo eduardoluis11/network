@@ -83,6 +83,17 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
     I’ll make it a link, so I’ll add an <a> tag to the “Edit” word.
 
+    I added 2 parameters as a margin to edit the vertical and horizontal margins separately (source:
+    https://www.w3schools.com/css/css_margin.asp .)
+
+    I will assign the div containing the body of the post a class instead of an ID since I'm rendering a ton of posts,
+    and using multiple IDs with the same name could give me trouble. If using classes give me trouble with JS's fetch()
+    function, I will change the div's class into an ID.
+
+    I have an idea to fix the above issue: I will create an ID for the div that will contain the post’s body, but
+    instead of hardcoding some name into the ID, I will use Jinja notation, and I will insert the ID of that post. That
+    way, each post will have a different ID, and I will be able to access that ID via JS to edit that specific post.
+
     -->
     {% for post in paginated_posts_in_current_page %}
         <div class="card mb-3">
@@ -108,7 +119,12 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
                     <!-- This renders the "Edit" link if the logged user is the author of the post -->
                     {% if logged_user_string == post.user|stringformat:"s" %}
-                        <a href="#">Edit</a>
+                        <div>
+                            <button class="btn btn-primary" style="width: 80px; margin:10px 0px;">
+                                Edit
+                            </button>
+                        </div>
+
                     {% endif %}
 
 <!--                {% endwith %}-->
@@ -117,8 +133,12 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 <!--                <b>{{logged_user_string}}</b>-->
             {% endif %}
 
+            <!-- Body of the post. -->
+            <div id="{{post.id}}">
+                <p>{{post.body}}</p>
+            </div>
 
-            <p>{{post.body}}</p>
+
             <p>{{post.timestamp}}</p>
             <p>❤ {{post.number_of_likes}}</p>
             <br>
@@ -148,6 +168,19 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     -->
 	{% include "network/pagination.html" %}
 
+    <!-- I will use vanilla JS, edit the post using the innerHTML property, and send the edition to the database using
+    JSON. I’d rather forget about React for the time being for this question.
+
+	So, to edit a specific post using JS, I will add an “onclick()” or “onsubmit” on each post using Jinja notation,
+	and the argument of that event listener will be that post’s ID, which I can call by using “post.ID”. So, I may add
+	something like “onclick(‘{{post.id}}’)” to the “Edit” link.
+
+	I will modify the “Edit” link so that it becomes a button, so that it’s easier to handle with JS code.
+
+    -->
+    <script>
+
+    </script>
 {% endblock %}
 
 <!-- This will call the .js file, which contains all the JS code. Source:
