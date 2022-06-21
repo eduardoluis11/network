@@ -65,11 +65,57 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 	posts, I will use Jinja notation to get the username of that user from the Post table.
 
     If I'm not logged in, and if I didn't post that post, I shouldn't even be able to see the "Edit" link.
+
+    After further consideration, I think that it’s just much easier to use Jinja notation to check if the author of a
+    post is the logged user using only Jinja notation directly on the HTML files. Jinja stores the name of the logged
+    user in the “user.username” variable.
+
+    The above didn’t work. Instead, I will try sending the logged user’s username as a string via Jinja from the view.
+    Then, I will try comparing it to the post’s author.
+
+    To convert the database entry that contains the author of a post (in may case, “post.user”) into a string, I need
+    to first use a Django filter called “stringformat” (source:
+    https://docs.djangoproject.com/en/4.0/ref/templates/builtins/#filters .) That filter converts variables into
+    strings. However, to do that, I need to specify a letter as a parameter to specify the kind of string that I want
+    as a result. In my case, I want the letter “s”, since that’s the Python equivalent of using str() to convert
+    something into a string (source: https://docs.python.org/3/library/stdtypes.html#old-string-formatting .) It needs
+    to be a lower case “s”, or the variable will turn into an empty string (i.e.: ‘’.)
+
     -->
     {% for post in paginated_posts_in_current_page %}
         <div class="card mb-3">
             <a href="profile/{{post.user}}"><b>{{post.user}}</b></a>
-<!--            <p>Edit</p>-->
+
+            <!-- This renders the "Edit" link if the logged user is the author of the post -->
+            {% if user.is_authenticated %}
+
+                <!-- DEBUG msg (source:
+                https://stackoverflow.com/questions/46728372/invalid-block-tag-set-expected-empty-or-endfor-did-you-forget-to-registe) -->
+<!--                {% with post_author=post.user|stringformat:"s" %}-->
+<!--                    <b>{{post_author}}</b>-->
+<!--                    <b>{{post.user}}</b>-->
+
+
+                    <!-- DEBUG msg: This will print something if post.user is a string (source:
+                    https://www.webforefront.com/django/usebuiltinjinjafilters.html ) -->
+    <!--                {% if post_author is string %}-->
+    <!--                    <b>post.user is a string</b>-->
+    <!--                {% else %}-->
+    <!--                    <b>Sorry. post.user is NOT a string</b>-->
+    <!--                {% endif %}-->
+
+                    <!-- This renders the "Edit" link if the logged user is the author of the post -->
+                    {% if logged_user_string == post.user|stringformat:"s" %}
+                        <b>Edit</b>
+                    {% endif %}
+
+<!--                {% endwith %}-->
+
+                <!-- DEBUG msg -->
+<!--                <b>{{logged_user_string}}</b>-->
+            {% endif %}
+
+
             <p>{{post.body}}</p>
             <p>{{post.timestamp}}</p>
             <p>❤ {{post.number_of_likes}}</p>

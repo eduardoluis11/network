@@ -79,11 +79,32 @@ BUG: Whenever I post a post, all posts disappear. They only reappear when I go b
 BUG FIX: I just needed to add the Jinja variable that stored the paginated posts in the "if" statement that
 creates a new post.
 
+I may add Jinja notation to check if the logged user is the author of that post, and if so, I will show an “edit” link 
+on that post. However, this may be error prone. So, ideally, I should check if the logged user is the author of that 
+post in the views. But remember: I should add those conditions to both the index() and the profile() views. If that 
+condition is met, I’ll create a boolean variable, and I’ll set it to “True” to render the “Edit” link.
+	
+Then, I’ll send that boolean to the home and profile pages via Jinja. If the Boolean that checks if the logged user is 
+the author of that post is “True”, I will render the “Edit” link. I will only decide whether to change that Boolean if 
+the user’s logged in. So, I will have to add a “login” decorator to the condition that asks me if the logged user is the 
+author of a specific post.
+
+To check if a user is logged in within a view’s code, I need to use this code snippet (source: my “commerce” homework 
+assignment):    
+    if request.user.is_authenticated:
+    
+After further consideration, I think that it’s just much easier to use Jinja notation to check if the author of a post 
+is the logged user using only Jinja notation directly on the HTML files. Jinja stores the name of the logged user in 
+the “user.username” variable.
+
 """
 def index(request):
 
     # This gets all the posts from the database
     all_posts = Post.objects.all().order_by('-timestamp')
+
+    # This will store a Boolean that tells me whether to render the "Edit" link on a post
+    render_edit_link = False
 
     # This will paginate the posts so that each page has 10 posts
     paginated_posts = Paginator(all_posts, 10)
@@ -123,6 +144,14 @@ def index(request):
     # This calls the post creation form
     form = CreatePostForm()
 
+    # This declares a variable that will store the user's username as a string
+    logged_user_string = ''
+
+    # This checks if the user is logged in. If they do, I will send the user's username as a string in Jinja
+    if request.user.is_authenticated:
+        logged_user_string = str(request.user)
+
+
     # This checks if the "submit" button has been clicked
     if request.method == "POST":
         new_post = request.POST["new_post"]
@@ -150,6 +179,7 @@ def index(request):
             "post_creation_success_message": post_creation_success_message,
             "all_posts": all_posts,
             "paginated_posts_in_current_page": paginated_posts_in_current_page,
+            "logged_user_string": logged_user_string,
         })
 
     # I'll try to paginate the posts by calling my paginate function here
@@ -157,6 +187,7 @@ def index(request):
         "form": form,
         "all_posts": all_posts,
         "paginated_posts_in_current_page": paginated_posts_in_current_page,
+        "logged_user_string": logged_user_string,
     })
 
 
