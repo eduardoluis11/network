@@ -81,6 +81,8 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     something into a string (source: https://docs.python.org/3/library/stdtypes.html#old-string-formatting .) It needs
     to be a lower case “s”, or the variable will turn into an empty string (i.e.: ‘’.)
 
+    I’ll make it a link, so I’ll add an <a> tag to the “Edit” word.
+
     -->
     {% for post in paginated_posts_in_current_page %}
         <div class="card mb-3">
@@ -106,7 +108,7 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
                     <!-- This renders the "Edit" link if the logged user is the author of the post -->
                     {% if logged_user_string == post.user|stringformat:"s" %}
-                        <b>Edit</b>
+                        <a href="#">Edit</a>
                     {% endif %}
 
 <!--                {% endwith %}-->
