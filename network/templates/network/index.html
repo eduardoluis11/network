@@ -95,6 +95,11 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     way, each post will have a different ID, and I will be able to access that ID via JS to edit that specific post.
 
     I will send via an onclick() event the post's ID number so that my JS code is able to edit that specific post.
+
+    I won’t add code yet to the edit() view to indicate what happens if the user clicks on the “Save” button. Instead,
+    I will create the “Save” button in the home page. This button will only be rendered after the user clicks on the
+    “Edit” button.
+
     -->
     {% for post in paginated_posts_in_current_page %}
         <div class="card mb-3">
@@ -124,6 +129,9 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
                             <button class="btn btn-primary" style="width: 80px; margin:10px 0px;" onclick="edit('{{post.id}}')">
                                 Edit
                             </button>
+
+                            <!-- This will render the "Save" button after the user clicks on "Edit" -->
+                            <div id="save_button_{{post.id}}"></div>
                         </div>
 
                     {% endif %}
@@ -195,6 +203,16 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     It’s working. Now, I’m getting extra space both before and after the text of the post. To remove it, I’ll try to use 
     the trim() function from JS (source: https://bobbyhadz.com/blog/javascript-get-text-of-paragraph .)
 
+    I will add code so that the “edit” button makes the “Save” button appear.
+
+    After further consideration, I realize that the fetch() function (if I manually specify it) will always send a POST 
+    request, independently of whether I use a form or a button for the “Save” button. So, for the sake of simplicity, I 
+    will use a <button> tag for the “Save” button.
+
+    I will add a “onclick()” even listener to the “Save” button, which will obtain the ID of that post to differentiate 
+    that post from other posts. Also, I will call the function that will fetch the API from the edit_post() view. But, 
+    for that, I need to create that “save()” function beforehand.
+
     -->
     <script>
 
@@ -213,7 +231,27 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
             // This renders the <textarea> tag that replaces the post's body
             post.innerHTML = `<textarea>${post_body}</textarea>`
 
+            // This stores the save button
+            let save_button = document.getElementById(`save_button_${post_id}`)
+
+            // This renders the "Save" button
+            save_button.innerHTML = `
+            <button class="btn btn-primary" onclick="save(${post_id})">Save</button>
+            `
+
         }
+
+        // Function for saving edited posts
+        function save(post_id) {
+
+            // DEBUG msg
+            console.log(`You have clicked "Save" on post number ${post_id}`)
+
+            // This will call the API to update the post in the database
+            
+        }
+
+        
     </script>
 {% endblock %}
 

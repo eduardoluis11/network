@@ -684,6 +684,58 @@ def following_page(request):
         "paginated_posts_in_current_page": paginated_posts_in_current_page,
     })
 
+""" View for editing posts.
+
+I need to create a new view, since the other view that creates posts inserts posts into the database, and I want to 
+update the entries. I don’t want to add new entries when editing a post.
+	
+To make the post editing view, I will check for a POST request to add an extra layer of privacy when sending the 
+request to edit the post. Remember that this question asks me to add security to the post edition mechanic. However, 
+for the time being, I will use the decorator that removes CSRF protection to test that my API works. AFTERWARDS, I 
+will re-add the CSRF protection, and make it work with the JS code.
+	
+If a POST request is made to the edition API, I will check the content of the body of the edited post. Then, I will 
+update the entry that contains that specific post so that the “body” column is updated. That is, I will update the body 
+of that post.
+
+And, of course, only logged users can edit posts, so only logged users can use this function.
+
+I will check of an additional parameter: the post’s ID number. So, alongside “request”, I will add another parameter to 
+the edit() view.
+
+"""
+@csrf_exempt
+@login_required
+def edit_post(request, post_id):
+
+    # If the user enters the "/edit/number" page by typing "/edit/number" on the URL, this will render
+    if request.method != "POST":
+
+        # If the user's not following the profile person, I will render the "follow" button
+        return JsonResponse({"message": "You're not currently editing any posts"}, status=400)
+
+    else:
+
+        # If the user's not following the profile person, I will render the "follow" button
+        return JsonResponse({"message": "You're not currently editing any posts"}, status=400)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 """ 	Since the question says “on any page that displays posts”, that means that the 
 Paginator functionality should work in both the index() and the follow_page() views. I 
 could either create a separate function for creating the pagination, and then call it in 
