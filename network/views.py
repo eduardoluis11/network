@@ -4,6 +4,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+# This will let me use json.loads() to convert JSON into a Python object (source:
+# https://docs.python.org/3/library/json.html)
+import json
+
 # This will let me send and receive JSON data (source: my "mail" homework assignment)
 from django.http import JsonResponse
 
@@ -703,21 +707,111 @@ And, of course, only logged users can edit posts, so only logged users can use t
 I will check of an additional parameter: the post’s ID number. So, alongside “request”, I will add another parameter to 
 the edit() view.
 
+What I need to do is to send via a POST request by using fetch(), and use stringify to send the body of the edited post. 
+The first thing that I should so is use the stringify() function to get the text of the edited post, and insert it into a key, 
+which should have the name of the column of the Post table that stores the body of a text. I also need the post’s ID number, 
+so that I edit that specific post instead of any other post. 
+
+So, I will need to use code like this (source: my submission for the “mail” homework assignment):
+
+# index.html
+  fetch('URL', {
+      method: 'POST',
+      headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Content-type':'application/json'
+      },
+      body:JSON.stringify({body:variable_that_stores_edited_post, post_id:post_id_number})                
+  })
+
+Afterwards, I need to get that JSON data into my edit_post() view, and convert it into a Python dictionary. That will be
+done with the json.loads() function. I will use the following code snippet (source: my submission for the “mail” 
+homework assignment):
+# views.py
+    data = json.loads(request.body)
+
+Now, I have a Python dictionary called “data”, which contains a key called “body”, and a value which contains the text 
+of the edited post. However, the only thing I want is the value, not the key nor the entire dictionary. To do that, I
+will use Python’s get() function, and insert the “body” key as a parameter, and insert that into a variable (source: 
+https://www.w3schools.com/python/ref_dictionary_get.asp .) So, I would use a code snippet like this:
+    edited_post_variable = data.get("body")
+	
+I also need the post’s ID number. I will convert it into an int to avoid any issues when trying to insert it into the 
+database. So, I will also use this code snippet:
+    post_id = int(data.get("post_id"))
+
+Finally, I will make a Query Set statement to update the Post table, so that I can edit that post in the database. I 
+just realized that I need that post’s ID in order to edit that specific post. So, I will also include the post’s ID 
+number in the JSON object, and I will insert that in a separate variable. I also want to make sure that the logged user 
+is the only one who can edit their own posts, so I will filter the posts so that it looks for a post with its 
+respective ID, which should be owned by the logged user. This can be done by using the filter 
+“user=variable_with_request.user”. 
+
+I also need to use the update() function at the end of the Query Set statement to update that post (source: my 
+“commerce” homework assignment.) So, the Query Set Statement should be something like this: 
+    Post.objects.filter(id=post_id, user=variable_with_request.user).update(body= edited_post_variable)
+
+Note: I will include an “else” below the “if Method != POST” condition, since I will tell the code to only execute and 
+make a Query Set query if the user makes a POST request (that is, if they click on the “Save” button.) Otherwise, the 
+code should stop executing.
+
+Remember: at first, I will deactivate the CSRF protection. But, if the above code works, I will reactivate it, and fix 
+the bugs that show up along the way.
+
+Note 2: I will need to add the JS code into the static folder (in “script.js”.) Otherwise, my JS code that contains the 
+edit() and save() functions won’t execute in the logged user’s profile, so the users won’t be able to edit their own 
+posts in the profile page otherwise. Also, that means I will have to reuse the IDs into the profile.html. It’s normally 
+bad to re-use an ID for 2 or more different divs, but, since the posts from the home page are the exact same posts from 
+the profile page (or, at least, the posts from the logged user), I could re-use the same ID for the same post that 
+appears in both the home and the profile pages.
+	
+Also, if the same post in the different pages have different IDs, the edit() and save() function won’t execute. So, I 
+would need to rewrite those 2 functions exclusively for the posts in the profile page, which would be extremely 
+inefficient. So, I still prefer to use a same ID for the same post in the 2 different pages.
+
+I need to return a JSON response in the edit_post() view, or otherwise, when I click on “Save”, the console will print 
+me an error. I will use the following code snippet (source: my “mail” homework assignment):
+    return JsonResponse({"message": "The post was edited successfully."}, status=201)
+
+
 """
 @csrf_exempt
 @login_required
 def edit_post(request, post_id):
 
+    logged_user = request.user  # This gets the data from the logged user
+    logged_user_id = logged_user.id  # ID of the user
+
+    # This gets an instance of the logged user
+    user_instance = User.objects.get(id=logged_user_id)
+
     # If the user enters the "/edit/number" page by typing "/edit/number" on the URL, this will render
     if request.method != "POST":
-
-        # If the user's not following the profile person, I will render the "follow" button
         return JsonResponse({"message": "You're not currently editing any posts"}, status=400)
 
+    # If the user clicks on "Save", this will update the post
     else:
 
-        # If the user's not following the profile person, I will render the "follow" button
-        return JsonResponse({"message": "You're not currently editing any posts"}, status=400)
+        # This converts the JSON data into a Python dictionary
+        data = json.loads(request.body)
+
+        print(data) # DEBUG msg
+
+        edited_post_text = data.get("body") # This stores the post's body
+        post_id = int(data.get("post_id"))  # This stores the post's ID
+
+        print(edited_post_text) # DEBUG msg
+
+        Post.objects.filter(id=post_id, user=user_instance).update(body=edited_post_text)
+
+        # This returns JSON data to prevent a bug from happening
+        return JsonResponse({"message": "The post was edited successfully."}, status=201)
+
+
+
+
+
+
 
 
 

@@ -213,6 +213,12 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     that post from other posts. Also, I will call the function that will fetch the API from the edit_post() view. But, 
     for that, I need to create that “save()” function beforehand.
 
+    The full explanation of the save() function is given on the views.py file. But, in a nutshell, the save() function
+    will call the edit_page() API via a fetch() call to store the edited post in the database. I also need the text
+    of the edited post in the save() function. So, to get that, I will assign an ID number to the <textarea> generated
+    by the edit() function. Then, I will get that <textarea> with that ID number with a document.getElementById() in
+    the save() function and get the text from it.
+
     -->
     <script>
 
@@ -229,7 +235,7 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
             let post_body = post.textContent.trim()
 
             // This renders the <textarea> tag that replaces the post's body
-            post.innerHTML = `<textarea>${post_body}</textarea>`
+            post.innerHTML = `<textarea id="textarea_${post_id}">${post_body}</textarea>`
 
             // This stores the save button
             let save_button = document.getElementById(`save_button_${post_id}`)
@@ -247,7 +253,22 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
             // DEBUG msg
             console.log(`You have clicked "Save" on post number ${post_id}`)
 
+            // This gets the <textarea> with the edited text from the post
+            let post = document.getElementById(`textarea_${post_id}`)
+
+            // This stores the text of the post's body without spaces nor tags
+            let post_body = post.textContent.trim()
+
             // This will call the API to update the post in the database
+            fetch(`/edit/${post_id}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-type':'application/json'
+                },
+                body:JSON.stringify({body:post_body, post_id:post_id})                
+            })
+
             
         }
 
