@@ -150,7 +150,7 @@ function edit(post_id) {
     // This gets the <div> that contains the current "Edit" button
     let edit_button_div = document.getElementById(`edit_button_${post_id}`)
 
-    // This deletes the "Edit" button ...
+    // This deletes the "Edit" button
     edit_button_div.innerHTML = ``
 
 }
@@ -211,6 +211,17 @@ function save(post_id) {
 
     // This eliminates the "Save" button
     save_button.innerHTML = ''
+
+    // This gets the <div> that contains the current "Edit" button
+    let edit_button_div = document.getElementById(`edit_button_${post_id}`)
+
+    // This re-renders the "Edit" button
+    edit_button_div.innerHTML = `
+    <button class="btn btn-primary" style="width: 80px; margin:10px 0px;" 
+    onclick="edit('${post_id}')">
+        Edit
+    </button>
+    `
 }
 
 
