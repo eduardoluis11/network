@@ -296,7 +296,13 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
         }
 
-        // Function for saving edited posts
+        /* Function for saving edited posts 
+        
+        After saving the post, I will remove the <textarea>, and I will put the post's text between <p> tags, so that the post
+        looks normal after clicking on the "Save" button. To do that, I need to edit the <div> that contains the <textarea>, 
+        NOT the <textarea> itself.
+
+        */
         function save(post_id) {
 
             // DEBUG msg
@@ -308,7 +314,6 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
             // This stores the text of the post's body without spaces nor tags
             let post_body = post.textContent.trim()
 
-            // DEBUG msg: I need to know why I can't get the edited text from the post
 
             // This will call the API to update the post in the database
             fetch(`/edit/${post_id}`, {
@@ -320,7 +325,13 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
                 body:JSON.stringify({body:post_body, post_id:post_id})                
             })
 
-            
+            // This gets the div with the post's body
+            let post_div = document.getElementById(`${post_id}`)
+
+            // This transforms the <textarea> tags into <p> tags
+            post_div.innerHTML = `
+            <p>${post_body}</p>
+            `
         }
 
         
