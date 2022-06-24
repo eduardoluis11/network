@@ -222,6 +222,31 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     -->
     <script>
 
+        /* This creates a cookie (source: anonymous's reply on
+        https://stackoverflow.com/questions/43606056/proper-django-csrf-validation-using-fetch-post-request ). 
+        
+        This is needed to be able to have the CSRF protection activated without getting any bugs from fetch() calls. 
+        
+        */
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+
+
+
         /* This detects if the <textarea> text has been modified. 
         The solution will be to use the “oninput” JS event listener, which executes code each time a user types a letter on a 
         <textarea> field (source: https://www.w3schools.com/jsref/event_oninput.asp .) To use this, I will have to create a 
@@ -304,11 +329,21 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
         Now, I want to make the “Save” button to disappear after clicking on it.
 
+        This is what I’ll do: I will use a huge code snippet to reate a cookie, and then insert it into the fetch() call to update 
+        the post with the CSRF protection on (source: anonymous's reply on 
+        https://stackoverflow.com/questions/43606056/proper-django-csrf-validation-using-fetch-post-request .) First, I will use 
+        the getCookie() function made by anonymous in the previously mentioned link. Then, on the “save()” function, I will edit the 
+        fetch() call to eliminate the “headers” attribute, and then specify the POST request and include the “credentials: same origin” 
+        attribute into the fetch() call. I also need to create a variable that gets the cookie for the CSRF call.
+
         */
         function save(post_id) {
 
             // DEBUG msg
             console.log(`You have clicked "Save" on post number ${post_id}`)
+
+            // This creates a cookie for the CSRF token
+            let csrftoken = getCookie('csrftoken');
 
             // This gets the <textarea> with the edited text from the post
             let post = document.getElementById(`textarea_${post_id}`)
@@ -317,10 +352,12 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
             let post_body = post.textContent.trim()
 
 
-            // This will call the API to update the post in the database
+            /* This will call the API to update the post in the database. I added an extra header to add
+            a cookie to the fetch() call so that it doesn't give me problems while using CSRF protection.*/
             fetch(`/edit/${post_id}`, {
                 method: 'POST',
                 headers: {
+                    "X-CSRFToken": csrftoken,
                     'Accept': 'application/json, text/plain, */*',
                     'Content-type':'application/json'
                 },

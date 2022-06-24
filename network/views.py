@@ -775,7 +775,7 @@ me an error. I will use the following code snippet (source: my “mail” homewo
 
 
 """
-@csrf_exempt
+
 @login_required
 def edit_post(request, post_id):
 
