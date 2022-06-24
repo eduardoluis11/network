@@ -100,6 +100,9 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     I will create the “Save” button in the home page. This button will only be rendered after the user clicks on the
     “Edit” button.
 
+    I need to add an ID to a div that will contain the "Edit" button so that I can make it disappear when I click on it, and 
+    make it appear after clicking on "Save".
+
     -->
     {% for post in paginated_posts_in_current_page %}
         <div class="card mb-3">
@@ -126,9 +129,12 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
                     <!-- This renders the "Edit" button if the logged user is the author of the post -->
                     {% if logged_user_string == post.user|stringformat:"s" %}
                         <div>
-                            <button class="btn btn-primary" style="width: 80px; margin:10px 0px;" onclick="edit('{{post.id}}')">
-                                Edit
-                            </button>
+                            <div id="edit_button_{{post.id}}">
+                                <button class="btn btn-primary" style="width: 80px; margin:10px 0px;" 
+                                onclick="edit('{{post.id}}')">
+                                    Edit
+                                </button>
+                            </div>
 
                             <!-- This will render the "Save" button after the user clicks on "Edit" -->
                             <div id="save_button_{{post.id}}"></div>

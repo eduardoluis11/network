@@ -115,7 +115,13 @@ function edited_text(post_id) {
 
 }
 
-// Edit post mechanic
+/* Edit post mechanic 
+
+I will eliminate the “Edit” button when editing a post, and re-render it after the user clicks on “Save”. This will make 
+the web app look better. To do this, I need to add a div to each button, and an ID that is unique for the Edit button 
+of each post. I SHOULDN’T edit the HTML code of the button itself, or otherwise it won’t disappear when I click on it.
+
+*/
 function edit(post_id) {
 
     // DEBUG msg
@@ -140,6 +146,12 @@ function edit(post_id) {
     save_button.innerHTML = `
     <button class="btn btn-primary" onclick="save(${post_id})">Save</button>
     `
+
+    // This gets the <div> that contains the current "Edit" button
+    let edit_button_div = document.getElementById(`edit_button_${post_id}`)
+
+    // This deletes the "Edit" button ...
+    edit_button_div.innerHTML = ``
 
 }
 

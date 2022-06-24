@@ -72,6 +72,9 @@
         the time being, I will combine Jinja and Django with JS and JSON.
 
         I added Jinja notation to the button to insert the name of the person from the profile. I need that to use the API.
+
+        I need to add an ID to the "Edit" button so that I can make it disappear when I click on it, and make it appear
+        after clicking on "Save".
         -->
         {% if user.is_authenticated and is_follow_active == True %}
 
@@ -144,9 +147,12 @@
                 {% if user.is_authenticated %}
                     {% if logged_user_string == post.user|stringformat:"s" %}
                         <div>
-                            <button class="btn btn-primary" style="width: 80px; margin:10px 0px;" onclick="edit('{{post.id}}')">
-                                Edit
-                            </button>
+                            <div id="edit_button_{{post.id}}">
+                                <button class="btn btn-primary" style="width: 80px; margin:10px 0px;" 
+                                onclick="edit('{{post.id}}')">
+                                    Edit
+                                </button>
+                            </div>
 
                             <!-- This will render the "Save" button after the user clicks on "Edit" -->
                             <div id="save_button_{{post.id}}"></div>
