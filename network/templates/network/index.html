@@ -222,6 +222,52 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     -->
     <script>
 
+        /* This detects if the <textarea> text has been modified. 
+        The solution will be to use the “oninput” JS event listener, which executes code each time a user types a letter on a 
+        <textarea> field (source: https://www.w3schools.com/jsref/event_oninput.asp .) To use this, I will have to create a 
+        3rd JS function, which will get the edited text from the <textarea> I could call it something like “edited_text(argument)”. 
+        That function will be called on either the save() function, or it will be an independent function. Then, I 
+        will call it from the save() function to get the edited text from the post. I will add the event listener to 
+        the <textarea> code, which is generated on the edit() function. Finally, the save() function will send that 
+        edited text from the JS code to the view. 
+
+        I need the post's ID on the "oninput" function (edited_text()) as an argument, since I need to differentiate that post 
+        from the other posts.
+
+        What I can do is that, each time that the “oninput” even listener is called, that is, each time that the edit_text() function 
+        is called, I will edit the HTML code of the <textarea> by using the innerHTML attribute. That way, the text will be constantly 
+        be edited on the HTML. Then, when I click on “Save”, the edited text will be sent to the API. I could use code like this 
+        (source: https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_oninput ):
+            let text = document.getElementById("id_of_textarea").value;
+            document.getElementById("id_of_textarea").innerHTML = text;
+
+            It should work with just using “=” in the snippet that ends with “innerHTML”. That is, it should work without using “+=”. In 
+        other words, if I delete something from the existing text, and if I don’t add any additional text, it should still get all of 
+        the text properly.
+
+        BUG FIX: The above didn’t work properly, but that was because I'm also grabbing the "value" attribute. That is, I was doing 
+        "code.value.innHTML", which could have caused a bug. So, I will make a new variable that will get the text 
+        from the <textarea>, and replace it with what the user has typed so far by using a getElementByID, and then using
+        "innerHTML".
+
+        */
+        function edited_text(post_id) {
+            
+            // DEBUG msg: This will execute each time that the user types anything in the <textarea>
+            console.log(`You typed/deleted something from a <textarea> in the post with ID number ${post_id}.`);
+
+            // This edits the text of the <textarea> in the HTML code whenever the user types something
+            let text = document.getElementById(`textarea_${post_id}`).value;
+            // text.innerHTML = text;
+
+            // DEBUG msg: This is what the user has typed
+            console.log(`You have written "${text}"`);
+
+            // This replaces the HTML code from the <textarea> to include what the user has typed
+            document.getElementById(`textarea_${post_id}`).innerHTML = text;
+
+        }
+
         // Edit post mechanic
         function edit(post_id) {
 
@@ -235,7 +281,10 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
             let post_body = post.textContent.trim()
 
             // This renders the <textarea> tag that replaces the post's body
-            post.innerHTML = `<textarea id="textarea_${post_id}">${post_body}</textarea>`
+            post.innerHTML = `
+            <textarea id="textarea_${post_id}" 
+            oninput="edited_text(${post_id})">${post_body}</textarea>
+            `
 
             // This stores the save button
             let save_button = document.getElementById(`save_button_${post_id}`)
@@ -258,6 +307,8 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
             // This stores the text of the post's body without spaces nor tags
             let post_body = post.textContent.trim()
+
+            // DEBUG msg: I need to know why I can't get the edited text from the post
 
             // This will call the API to update the post in the database
             fetch(`/edit/${post_id}`, {
