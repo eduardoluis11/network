@@ -143,11 +143,22 @@
                 <!-- This renders the "Edit" link if the logged user is the author of the post -->
                 {% if user.is_authenticated %}
                     {% if logged_user_string == post.user|stringformat:"s" %}
-                        <a href="#">Edit</a>
+                        <div>
+                            <button class="btn btn-primary" style="width: 80px; margin:10px 0px;" onclick="edit('{{post.id}}')">
+                                Edit
+                            </button>
+
+                            <!-- This will render the "Save" button after the user clicks on "Edit" -->
+                            <div id="save_button_{{post.id}}"></div>
+                        </div>
                     {% endif %}
                 {% endif %}
 
-                <p>{{post.body}}</p>
+                <!-- Body of the post -->
+                <div id="{{post.id}}">
+                    <p>{{post.body}}</p>
+                </div>
+
                 <p>{{post.timestamp}}</p>
                 <p>❤ {{post.number_of_likes}}</p>
                 <br>
