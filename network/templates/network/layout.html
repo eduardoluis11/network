@@ -77,11 +77,16 @@
             {% endblock %}
         </div>
         
+        <!-- This will access the JS file. -->
+        <script src="{% static 'network/script.js' %}"></script>
+
+
         <!-- This will try to access the JS file. 
             
         I will add the "babel" attribute to it so that the browser is able to interpret the React code 
         (source: https://youtu.be/jrBhi8wbzPw .) -->
         <!-- <script type="text/babel" src="{% static 'network/script.js' %}"></script> -->
+
 
         <!-- To show the links to the “previous” and “next” pages on the footer of the pages with posts, I will use this
         to call the pagination.html template (https://testdriven.io/blog/django-pagination/ ):
