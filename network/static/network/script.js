@@ -231,11 +231,16 @@ First, I will increase and decrease the “like” count via “client-side”, 
 will reset back to its original value. That’s because I won’t update the database yet. I will simply temporarily add or subtract one to 
 the “like” count by using JS.
 
+I will have to use a Boolean value to determine whether to add a like or to remove it. The value of that Boolean should ideally be obtained 
+via a fetch() call to the database. However, since I’m only testing my JS code, I will not check the database for the time being.
+
 */
 function like_toggle(number_of_likes) {
 
     // DEBUG msg
     console.log("You just clicked on the like button.")
+
+
 }
 
 
