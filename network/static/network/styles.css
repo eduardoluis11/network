@@ -18,6 +18,7 @@ https://stackoverflow.com/questions/5901732/how-to-create-a-text-only-button .)
     margin:0;
     padding:0;
     cursor: pointer;
+    font-size: 25px;
 }
 
 

@@ -225,6 +225,19 @@ function save(post_id) {
 }
 
 
+/* "Like" functionality. 
+
+First, I will increase and decrease the “like” count via “client-side”, that is, that after I reload the entire page, the like count 
+will reset back to its original value. That’s because I won’t update the database yet. I will simply temporarily add or subtract one to 
+the “like” count by using JS.
+
+*/
+function like_toggle(number_of_likes) {
+
+    // DEBUG msg
+    console.log("You just clicked on the like button.")
+}
+
 
 
 

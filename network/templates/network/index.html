@@ -110,6 +110,9 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     getElementByID, so that I only modify that specific “like” count. Then, everything else will be done via JS code
     and by using a fetch() call.
 
+    I just realized that only logged users should be able to like a post. So, I will modify my code so that the onclick() 
+    event listener won’t work if the user’s not logged in.
+
     -->
     {% for post in paginated_posts_in_current_page %}
         <div class="card mb-3">
@@ -164,10 +167,23 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
             <p>{{post.timestamp}}</p>
 
             <!-- "Like" button, and number of likes -->
-            <div id="like_count_{{post.id}}">
-                <button class="text_only_button">❤</button>
-                <p>{{post.number_of_likes}}</p>
-            </div>
+
+                <div id="like_div_{{post.id}}">
+
+                    <!-- Users will only be able to liek a post if they are logged in -->
+                    {% if user.is_authenticated %}
+                        <button id="like_button_{{post.id}}" class="text_only_button"
+                            onclick="like_toggle('{{post.number_of_likes}}')">❤</button>
+
+                    <!-- If they aren't logged, they won't be able to like a post -->
+                    {% else %}
+                        <button id="like_button_{{post.id}}" class="text_only_button">❤</button>
+                    {% endif %}
+                    
+                    <p id="like_count_{{post.id}}">{{post.number_of_likes}}</p>
+                </div>
+
+
 
             <br>
         </div>
