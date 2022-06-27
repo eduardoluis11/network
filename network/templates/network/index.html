@@ -173,7 +173,7 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
                     <!-- Users will only be able to liek a post if they are logged in -->
                     {% if user.is_authenticated %}
                         <button id="like_button_{{post.id}}" class="text_only_button"
-                            onclick="like_toggle({{post.number_of_likes}})">❤</button>
+                            onclick="like_toggle({{post.id}}, {{post.number_of_likes}})">❤</button>
 
                     <!-- If they aren't logged, they won't be able to like a post -->
                     {% else %}

@@ -234,11 +234,102 @@ the “like” count by using JS.
 I will have to use a Boolean value to determine whether to add a like or to remove it. The value of that Boolean should ideally be obtained 
 via a fetch() call to the database. However, since I’m only testing my JS code, I will not check the database for the time being.
 
+I see the error in my thinking: I’m getting the number of likes as an argument for the current post for the like_toggle() function. However, 
+I want both the number of likes and the ID number of the post. So, I will send 2 argument from the onclick() event listener of the “like” 
+button.
+
+I see something: DON’T change the inner HTML of a tag by inserting “tag.innerHTML” into a variable and then calling the variable. Instead, 
+I should manually call the “.innerHTML” on the variable that selects that div or tag, and then assign a value to that tag.
+
 */
-function like_toggle(number_of_likes) {
+function like_toggle(post_id, number_of_likes) {
 
     // DEBUG msg
-    console.log("You just clicked on the like button.")
+    // console.log("You just clicked on the like button.")
+
+    // Boolean that will tell me whether to add or remove a "like"
+    let add_like = '';
+
+    // This gets the <span> that stores the "like" count
+    let like_count_span = document.getElementById(`like_count_${post_id}`)
+
+    // DEBUG msg
+    console.log(`The like_count_span variable contains this: ${like_count_span}`)
+
+
+    // This gets the number of likes from the "like" count form the post
+    let like_count = like_count_span.innerHTML;
+
+    // DEBUG msg
+    console.log(`The inner HTML of the like_count_span variable contains this: ${like_count}`)
+
+    // DEBUG test: This should change the like count to 1
+    // like_count = 1
+    // console.log(`The inner HTML of the like_count_span variable NOW contains this: ${like_count}`)
+
+    // This should modifies the HTML code of the <span> that contains "like count"
+    // like_count_span.innerHTML = 1   
+
+    // like_count_span.innerHTML = `<span>1</span>`
+
+    // This gets the div with the current post
+    let post = document.getElementById(`${post_id}`)
+
+    // This gets the div with the like count of the current post
+    let post_like_count = document.getElementById(`like_div_${post_id}`)
+
+
+    // DEBUG "if" statement: This will change the Boolean to "true" if the "like" count is 0, and "false" otherwise
+    if (like_count == 0) {
+
+        // This will let the user like a post
+        add_like = true;
+
+        // This changes the "like" count to 1
+        // like_count_span.innerHTML = 1
+
+        // This adds 1 to the "like" count. THIS is working. I need another div for the <span>
+        // post_like_count.innerHTML = `<span>1</span>`
+
+        // like_count_span = `<span>1</span>`
+
+        // like_count = 1;
+
+        }
+    else if (like_count == 1) {
+    
+        // This will let the user remove a "like"
+        add_like = false;
+        
+
+        // This resets the like count back to 0
+        // like_count_span.innerHTML = 0
+
+        // like_count = 0;
+        
+    }
+
+    // If the boolean is true, this will add a like. Otherwise, it will remove it
+    if (add_like == true) {
+        console.log("Nice! You liked this post.")
+
+        // This changes the "like" count to 1
+        like_count_span.innerHTML = 1
+
+        // This will let the user remove the "like"
+        // add_like = false;
+    }
+    else {
+        console.log("You no longer like this post.")
+
+        // This resets the like count back to 0
+        like_count_span.innerHTML = 0
+
+        // This will let the user add a "like"
+        // add_like = true;
+    }
+
+
 
 
 }
