@@ -103,6 +103,13 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
     I need to add an ID to a div that will contain the "Edit" button so that I can make it disappear when I click on it, and 
     make it appear after clicking on "Save".
 
+    I will send the “like” count to JS via Jinja and the HTML code in the <button> tag. I will make the heart icon that
+    represents the “like” button to be a button by using a <button> tag. Then, I will add an “onclick” event listener
+    to that button, in which I will send the number of likes as an argument. The number of likes will be sent as a
+    Jinja variable. Remember that I should assign an ID number to that <button> so that I can get access to it via
+    getElementByID, so that I only modify that specific “like” count. Then, everything else will be done via JS code
+    and by using a fetch() call.
+
     -->
     {% for post in paginated_posts_in_current_page %}
         <div class="card mb-3">
@@ -155,7 +162,13 @@ https://www.reddit.com/r/django/comments/f12r0r/invalid_block_tag_on_line_17_sta
 
 
             <p>{{post.timestamp}}</p>
-            <p>❤ {{post.number_of_likes}}</p>
+
+            <!-- "Like" button, and number of likes -->
+            <div id="like_count_{{post.id}}">
+                <button class="text_only_button">❤</button>
+                <p>{{post.number_of_likes}}</p>
+            </div>
+
             <br>
         </div>
 

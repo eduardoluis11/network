@@ -8,6 +8,19 @@ label {
     width: 100%;
 }
 
+/* This will make a text-only button for the "like" button. That is, it will make the borders and the rectangle of
+the button to disappear, and only the heart emoji should be visible (source: sdleihssirhc's reply from
+https://stackoverflow.com/questions/5901732/how-to-create-a-text-only-button .)
+*/
+.text_only_button {
+    background:none;
+    border:none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
+}
+
+
 /* body {
     background-color: black;
 } */
