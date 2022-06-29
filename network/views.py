@@ -114,36 +114,36 @@ def index(request):
     paginated_posts = Paginator(all_posts, 10)
 
     # DEBUG msg: this prints the object that was created when I first called the Paginator class
-    print(paginated_posts)
+    # print(paginated_posts)
 
     # This gets the current paginated page
     # Prints "None" if I don't specify a page, or "1" if I add "1" as a parameter
     current_page_number = request.GET.get('page', 1)
 
     # DEBUG msg
-    print(current_page_number)
+    # print(current_page_number)
 
     # This gets all the posts of the current page
     # Prints "<Page 1 of 2>"
     paginated_posts_in_current_page = paginated_posts.get_page(current_page_number)
 
     # DEBUG msg
-    print(paginated_posts_in_current_page)
+    # print(paginated_posts_in_current_page)
 
     # Debug msg: this the total number of posts
-    print(paginated_posts.count)    # Prints 11
+    # print(paginated_posts.count)    # Prints 11
 
     # DEBUG msg: This prints how many pages are in total after paginating
-    print(paginated_posts.num_pages)    # Prints 2
+    # print(paginated_posts.num_pages)    # Prints 2
 
     # DEBUG msg: This will print all posts, and the page to which those posts belong to
-    for i in paginated_posts.page_range:
-        print(paginated_posts.page(i))  # Prints page number
-        print(paginated_posts.page(i).object_list)  # Prints posts in that page in a generic object format
-
-        # This prints each post
-        for post in paginated_posts.page(i).object_list:
-            print(post.body)
+    # for i in paginated_posts.page_range:
+    #     print(paginated_posts.page(i))  # Prints page number
+    #     print(paginated_posts.page(i).object_list)  # Prints posts in that page in a generic object format
+    #
+    #     # This prints each post
+    #     for post in paginated_posts.page(i).object_list:
+    #         print(post.body)
 
     # This calls the post creation form
     form = CreatePostForm()
@@ -668,14 +668,14 @@ def following_page(request):
     paginated_posts = Paginator(favorite_users_posts_array, 10)
 
     # DEBUG msg: this prints the object that was created when I first called the Paginator class
-    print(paginated_posts)
+    # print(paginated_posts)
 
     # This gets the current paginated page
     # Prints "None" if I don't specify a page, or "1" if I add "1" as a parameter
     current_page_number = request.GET.get('page', 1)
 
     # DEBUG msg
-    print(current_page_number)
+    # print(current_page_number)
 
     # This gets all the posts of the current page
     # Prints "<Page 1 of 2>"
@@ -787,7 +787,7 @@ def edit_post(request, post_id):
 
     # If the user enters the "/edit/number" page by typing "/edit/number" on the URL, this will render
     if request.method != "POST":
-        return JsonResponse({"message": "You're not currently editing any posts"}, status=400)
+        return JsonResponse({"message": "You're not supposed to be here. This is the API for editing posts."}, status=400)
 
     # If the user clicks on "Save", this will update the post
     else:
@@ -795,12 +795,12 @@ def edit_post(request, post_id):
         # This converts the JSON data into a Python dictionary
         data = json.loads(request.body)
 
-        print(data) # DEBUG msg
+        # print(data) # DEBUG msg
 
         edited_post_text = data.get("body") # This stores the post's body
         post_id = int(data.get("post_id"))  # This stores the post's ID
 
-        print(edited_post_text) # DEBUG msg
+        # print(edited_post_text) # DEBUG msg
 
         Post.objects.filter(id=post_id, user=user_instance).update(body=edited_post_text)
 
@@ -821,9 +821,84 @@ user, and the post ID. Then, in the API in the view, I will check if there’s a
 from the JSON data sent from the fetch() call. If it doesn’t exist, I will insert it into the databse, and I will add a 
 like to the post. Otherwise, I will update the existing entry to that it subtracts one like from that post. 
 
+The user needs to be logged in order to liek a post. They can like their own post if they want.
+
+Remember that I'm working with foreign keys. So, to access the liked posts, I will need to use special notation in my Query Set
+statements. That is, I'll need to use:
+    filter(like_table_column__id=variable_from_this_API)
+    
+I’m trying to insert a value into the “post” column of the Like table, when, in reality, I need to insert an instance
+of that post. I will get an instance of it using “get()”. This happens because I'm working with foreign keys.
+
 """
+# @csrf_exempt
+@login_required
 def like(request, post_id):
-    pass
+
+    logged_user = request.user  # This gets the data from the logged user
+    logged_user_id = logged_user.id  # ID of the user
+
+    # This gets an instance of the logged user
+    user_instance = User.objects.get(id=logged_user_id)
+
+
+    # If the user enters the "/like/number" page by typing "/like/number" on the URL bar, this will render
+    if request.method != "POST":
+        return JsonResponse({"message": "You're not supposed to be here. This is the API for liking posts. "}, status=400)
+
+    # If the user clicks on the heart icon, this will add or remove a like
+    else:
+
+        # Instance of the selected post
+        post_instance = Post.objects.get(id=post_id)
+
+        # This is a Boolean that will tell the code whether to add or subtract 1 to the "like" count
+        add_like = ''
+
+        # This converts the JSON data from the JS code into a Python dictionary
+        data = json.loads(request.body)
+
+        print(data) # DEBUG msg
+
+        post_id = int(data.get("post_id"))  # This stores the post's ID
+
+        # This will check the "Like" table, and store the post that was liked by the logged user, if it has been liked before
+        liked_post = Like.objects.filter(user__id=logged_user_id, post__id=post_id)
+
+        # If the user hasn't liked this post, I will add the like by making an insertion to the database
+        if not liked_post:
+
+            # This prepares the data before inserting it into the database
+            add_like_to_database = Like(user=logged_user, post=post_instance)
+
+            # This inserts the like into the database
+            add_like_to_database.save()
+
+            # DEBUG msg
+            print("Great! The post has been added into the 'Like' table.")
+
+            # This sends a Boolean via JSON data to the JS code to add a like
+            return JsonResponse({"add_like": True}, status=201)
+
+        # If the post had already been liked, I will remove it from the "Like" table
+        else:
+            liked_post.delete()
+
+            # DEBUG msg
+            print("The post has been deleted from the 'Like' table.")
+
+            # This sends a Boolean via JSON data to the JS code to remove the like
+            return JsonResponse({"add_like": False}, status=201)
+
+            # This gets all the favorite users of the logged user
+            # favorite_users_query = Follower.objects.filter(follower__id=logged_user_id)
+
+
+
+
+        # Post.objects.filter(id=post_id, user=user_instance).update(body=edited_post_text)
+
+
 
 
 

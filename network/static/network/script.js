@@ -241,93 +241,131 @@ button.
 I see something: DON’T change the inner HTML of a tag by inserting “tag.innerHTML” into a variable and then calling the variable. Instead, 
 I should manually call the “.innerHTML” on the variable that selects that div or tag, and then assign a value to that tag.
 
+In the fetch() call in the JS code, I will get the data in a variable called “data”. So, to access that Boolean variable in the fetch() 
+call, I will use notation like the following:
+    boolean_variable_that_adds_like = data.boolean_from_views_py
+	
+Then, I insert that variable in the “if” statement that checks whether to add a like or remove it. I added it as a debug “if” statement, 
+which I can modify. If the Boolean for adding a like is “True”, I will let the user add a like. Otherwise, I will remove the like. 
+
+I need to send the post's ID number to the like() API so that it knows the exact post to which it should add the like.
+
+The ".then((response) => response.json())" and the ".then((data) => {})" snippets were taken from my "mail" homework assignment.
+
 */
 function like_toggle(post_id, number_of_likes) {
 
-    // DEBUG msg
-    // console.log("You just clicked on the like button.")
+    // This creates a cookie for the CSRF token
+    let csrftoken = getCookie('csrftoken');
 
-    // Boolean that will tell me whether to add or remove a "like"
-    let add_like = '';
+    /* This will call the API to add the like in the database. I added an extra header to add
+    a cookie to the fetch() call so that it doesn't give me problems while using CSRF protection.*/
+    fetch(`/like/${post_id}`, {
+        method: 'POST',
+        headers: {
+            "X-CSRFToken": csrftoken,
+            'Accept': 'application/json, text/plain, */*',
+            'Content-type':'application/json'
+        },
+        body:JSON.stringify({post_id:post_id})                
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        // This will check the data sent from the JsonResponse object sent from the API in views.py
 
-    // This gets the <span> that stores the "like" count
-    let like_count_span = document.getElementById(`like_count_${post_id}`)
+        // This gets the Boolean that tells me whether to add a like to the current post
+        let add_like = data.add_like;
 
-    // DEBUG msg
-    console.log(`The like_count_span variable contains this: ${like_count_span}`)
-
-
-    // This gets the number of likes from the "like" count form the post
-    let like_count = like_count_span.innerHTML;
-
-    // DEBUG msg
-    console.log(`The inner HTML of the like_count_span variable contains this: ${like_count}`)
-
-    // DEBUG test: This should change the like count to 1
-    // like_count = 1
-    // console.log(`The inner HTML of the like_count_span variable NOW contains this: ${like_count}`)
-
-    // This should modifies the HTML code of the <span> that contains "like count"
-    // like_count_span.innerHTML = 1   
-
-    // like_count_span.innerHTML = `<span>1</span>`
-
-    // This gets the div with the current post
-    let post = document.getElementById(`${post_id}`)
-
-    // This gets the div with the like count of the current post
-    let post_like_count = document.getElementById(`like_div_${post_id}`)
+        // DEBUG msg
+        console.log(`The add_like variable has the value: ${add_like}`)
 
 
-    // DEBUG "if" statement: This will change the Boolean to "true" if the "like" count is 0, and "false" otherwise
-    if (like_count == 0) {
+        // DEBUG msg
+        // console.log("You just clicked on the like button.")
 
-        // This will let the user like a post
-        add_like = true;
+        // Boolean that will tell me whether to add or remove a "like"
+        // let add_like = '';
 
-        // This changes the "like" count to 1
-        // like_count_span.innerHTML = 1
+        // This gets the <span> that stores the "like" count
+        let like_count_span = document.getElementById(`like_count_${post_id}`)
 
-        // This adds 1 to the "like" count. THIS is working. I need another div for the <span>
-        // post_like_count.innerHTML = `<span>1</span>`
+        // DEBUG msg
+        console.log(`The like_count_span variable contains this: ${like_count_span}`)
 
-        // like_count_span = `<span>1</span>`
 
-        // like_count = 1;
+        // This gets the number of likes from the "like" count form the post
+        let like_count = like_count_span.innerHTML;
 
+        // DEBUG msg
+        console.log(`The inner HTML of the like_count_span variable contains this: ${like_count}`)
+
+        // DEBUG test: This should change the like count to 1
+        // like_count = 1
+        // console.log(`The inner HTML of the like_count_span variable NOW contains this: ${like_count}`)
+
+        // This should modifies the HTML code of the <span> that contains "like count"
+        // like_count_span.innerHTML = 1   
+
+        // like_count_span.innerHTML = `<span>1</span>`
+
+        // This gets the div with the current post
+        let post = document.getElementById(`${post_id}`)
+
+        // This gets the div with the like count of the current post
+        let post_like_count = document.getElementById(`like_div_${post_id}`)
+
+
+        // DEBUG "if" statement: This will change the Boolean to "true" if the "like" count is 0, and "false" otherwise
+        // if (like_count == 0) {
+
+        //     // This will let the user like a post
+        //     add_like = true;
+
+        //     // This changes the "like" count to 1
+        //     // like_count_span.innerHTML = 1
+
+        //     // This adds 1 to the "like" count. THIS is working. I need another div for the <span>
+        //     // post_like_count.innerHTML = `<span>1</span>`
+
+        //     // like_count_span = `<span>1</span>`
+
+        //     // like_count = 1;
+
+        //     }
+        // else if (like_count == 1) {
+        
+        //     // This will let the user remove a "like"
+        //     add_like = false;
+            
+
+        //     // This resets the like count back to 0
+        //     // like_count_span.innerHTML = 0
+
+        //     // like_count = 0;
+            
+        // }
+
+        // If the boolean from the API's JSON response is true, this will add a like. Otherwise, it will remove it
+        if (add_like == true) {
+            console.log("Nice! You liked this post.")
+
+            // This changes the "like" count to 1
+            like_count_span.innerHTML = like_count + 1;
+
+            // This will let the user remove the "like"
+            // add_like = false;
         }
-    else if (like_count == 1) {
-    
-        // This will let the user remove a "like"
-        add_like = false;
-        
+        else {
+            console.log("You no longer like this post.")
 
-        // This resets the like count back to 0
-        // like_count_span.innerHTML = 0
+            // This resets the like count back to 0
+            like_count_span.innerHTML = like_count - 1;
 
-        // like_count = 0;
-        
-    }
+            // This will let the user add a "like"
+            // add_like = true;
+        }
 
-    // If the boolean is true, this will add a like. Otherwise, it will remove it
-    if (add_like == true) {
-        console.log("Nice! You liked this post.")
-
-        // This changes the "like" count to 1
-        like_count_span.innerHTML = like_count + 1;
-
-        // This will let the user remove the "like"
-        // add_like = false;
-    }
-    else {
-        console.log("You no longer like this post.")
-
-        // This resets the like count back to 0
-        like_count_span.innerHTML = like_count - 1;
-
-        // This will let the user add a "like"
-        // add_like = true;
-    }
+    })
 
 }
 
