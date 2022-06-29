@@ -314,7 +314,7 @@ function like_toggle(post_id, number_of_likes) {
         console.log("Nice! You liked this post.")
 
         // This changes the "like" count to 1
-        like_count_span.innerHTML = 1
+        like_count_span.innerHTML = like_count + 1;
 
         // This will let the user remove the "like"
         // add_like = false;
@@ -323,14 +323,11 @@ function like_toggle(post_id, number_of_likes) {
         console.log("You no longer like this post.")
 
         // This resets the like count back to 0
-        like_count_span.innerHTML = 0
+        like_count_span.innerHTML = like_count - 1;
 
         // This will let the user add a "like"
         // add_like = true;
     }
-
-
-
 
 }
 

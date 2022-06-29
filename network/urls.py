@@ -21,6 +21,9 @@ URL. It will be the same as the follow() view. I will use that views as a refere
 JSON data. Since I need the post’s ID number as a parameter, I will also include the post ID number on the URL that 
 calls the edit_post() view.
 
+I will have to create a new URL to access the “like” API from the views.py file. I will add the URL in the urls.py 
+file. The URL will be similar to the “edit” one, but it will instead be called “like”.
+
 """
 urlpatterns = [
     path("", views.index, name="index"),
@@ -31,6 +34,7 @@ urlpatterns = [
     path("profile/<str:username>/follow", views.follow, name="follow"),
     path("following", views.following_page, name="following_page"),
     path("edit/<str:post_id>", views.edit_post, name="edit_post"),
+    path("like/<str:post_id>", views.like, name="like"),
 
 ]
 

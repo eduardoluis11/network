@@ -809,10 +809,21 @@ def edit_post(request, post_id):
 
 
 
+""" Like and Unlike API.
 
+I think I know what I need to do to finish the “like” functionality. To check whether to add or remove a like from a post, 
+I will send a JSON response from the view to the JS code. That can be done with the JsonResponse function from Django/Python 
+(source: https://docs.djangoproject.com/en/4.0/ref/request-response/ .) The variable that I will send via the JsonResponse 
+function will be a Boolean. 
 
+I think I get it: I will make a fetch call that will send to the view file two columns (2 variables): the id of the logged 
+user, and the post ID. Then, in the API in the view, I will check if there’s an entry with that user ID and that post ID 
+from the JSON data sent from the fetch() call. If it doesn’t exist, I will insert it into the databse, and I will add a 
+like to the post. Otherwise, I will update the existing entry to that it subtracts one like from that post. 
 
-
+"""
+def like(request, post_id):
+    pass
 
 
 
