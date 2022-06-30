@@ -773,6 +773,10 @@ I need to return a JSON response in the edit_post() view, or otherwise, when I c
 me an error. I will use the following code snippet (source: my “mail” homework assignment):
     return JsonResponse({"message": "The post was edited successfully."}, status=201)
 
+For security purposes, I will redirect the user to a new page if they try to enter this API by manually typing 
+"/edit/number" on the URL bar.  What I’ll need to do is to create a new HTML page. That page will say a message like 
+“FORBIDDEN: You should not be here. Please, go back to the previous page.” Then I will redirect the user to the error 
+page if they do not submit the POST request to enter into the “/edit/number” link.
 
 """
 
@@ -787,7 +791,11 @@ def edit_post(request, post_id):
 
     # If the user enters the "/edit/number" page by typing "/edit/number" on the URL, this will render
     if request.method != "POST":
-        return JsonResponse({"message": "You're not supposed to be here. This is the API for editing posts."}, status=400)
+
+        # This will send the user to a page that says "FORBIDDEN"
+        return render(request, "network/forbidden.html")
+
+        # return JsonResponse({"message": "You're not supposed to be here. This is the API for editing posts."}, status=400)
 
     # If the user clicks on "Save", this will update the post
     else:

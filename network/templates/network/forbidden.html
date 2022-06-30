@@ -1,0 +1,18 @@
+<!-- This page will show up if the user manually types the URL for the edit() view.
+
+ This page is created for adding more security to the edit() API. -->
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <!-- Before submitting this homework assignment, I will create an error page that will be displayed if the user
+    tries to enter the route for editing a post on the URL bar. That is for increasing the web app’s security, and to
+    make it clear that the user shouldn’t be entering on the edit() view route. For this, I won’t need to create a new
+    URL in urls.py, since that URL is already created (“/edit/post_id”.)
+
+    -->
+    <h1>FORBIDDEN</h1>
+
+    <p>You should not be here. Please, go back to the previous page.</p>
+
+{% endblock %}
