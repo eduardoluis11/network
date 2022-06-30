@@ -830,8 +830,31 @@ statements. That is, I'll need to use:
 I’m trying to insert a value into the “post” column of the Like table, when, in reality, I need to insert an instance
 of that post. I will get an instance of it using “get()”. This happens because I'm working with foreign keys.
 
+I never wrote a Query Set query that would update the like count on the number_of_likes column on the Post table. I 
+also never specified that that column should be equal to the sum of all the entries for a specific post from the Like 
+table. I will need to see how to make a “COUNT” and a “GROUP BY” in Query Set. 
+	
+To do the COUNT and the GROUP BY, I need to use a count() and a filter() function from Query Set, respectively. I did 
+something similar for the view that counts the number of followers. So, I would use a code snippet like the following:
+    like_count_variable = Table.objects.filter(column=the_desired_column).count()
+    
+In my case, the snippet should be something like this:
+    like_count_variable = Like.objects.filter(post__id=post_id).count()
+
+That will give me the number of likes for that post, but it won’t do anything to my database. So, the next thing that I 
+will need to do is to insert that number into the Post table. To do that, I will update the number_of_likes column for 
+that specific post in the Post table to insert that number.
+
+After I store correctly the number of likes into the Post table in the database, I will then fix the like count in the 
+client side.
+
+To update the like count in the Post table by using the count() function, I could use a snippet like this:
+    Post.objects.filter(id=post_id).update(number_of_likes=like_count_variable)
+
+To avoid any issues, I may convert the variable with the like count into an int.
+
 """
-# @csrf_exempt
+
 @login_required
 def like(request, post_id):
 
@@ -877,6 +900,16 @@ def like(request, post_id):
             # DEBUG msg
             print("Great! The post has been added into the 'Like' table.")
 
+            # This will get the like count from the Like table
+            like_count_from_like_table = Like.objects.filter(post__id=post_id).count()
+
+            # DEBUG msg
+            print(like_count_from_like_table)
+
+            # This inserts the like count for the current post into the Post table
+            Post.objects.filter(id=post_id).update(number_of_likes=like_count_from_like_table)
+
+
             # This sends a Boolean via JSON data to the JS code to add a like
             return JsonResponse({"add_like": True}, status=201)
 
@@ -886,6 +919,15 @@ def like(request, post_id):
 
             # DEBUG msg
             print("The post has been deleted from the 'Like' table.")
+
+            # This will get the like count from the Like table
+            like_count_from_like_table = Like.objects.filter(post__id=post_id).count()
+
+            # DEBUG msg
+            print(like_count_from_like_table)
+
+            # This inserts the like count for the current post into the Post table
+            Post.objects.filter(id=post_id).update(number_of_likes=like_count_from_like_table)
 
             # This sends a Boolean via JSON data to the JS code to remove the like
             return JsonResponse({"add_like": False}, status=201)
