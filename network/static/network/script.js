@@ -276,8 +276,12 @@ function like_toggle(post_id, number_of_likes) {
         // This gets the Boolean that tells me whether to add a like to the current post
         let add_like = data.add_like;
 
+        // This gets the like count from the like() view
+        let total_like_count = data.like_count_from_like_table
+
         // DEBUG msg
         console.log(`The add_like variable has the value: ${add_like}`)
+        console.log(`The total_like_count variable has the value: ${total_like_count}`)
 
 
         // DEBUG msg
@@ -349,8 +353,11 @@ function like_toggle(post_id, number_of_likes) {
         if (add_like == true) {
             console.log("Nice! You liked this post.")
 
+            // This gets the current like count for this post from the database
+            like_count_span.innerHTML = total_like_count
+
             // This changes the "like" count to 1
-            like_count_span.innerHTML = like_count + 1;
+            // like_count_span.innerHTML = like_count + 1;
 
             // This will let the user remove the "like"
             // add_like = false;
@@ -358,8 +365,11 @@ function like_toggle(post_id, number_of_likes) {
         else {
             console.log("You no longer like this post.")
 
+            // This gets the current like count for this post from the database
+            like_count_span.innerHTML = total_like_count
+
             // This resets the like count back to 0
-            like_count_span.innerHTML = like_count - 1;
+            // like_count_span.innerHTML = like_count - 1;
 
             // This will let the user add a "like"
             // add_like = true;

@@ -853,6 +853,9 @@ To update the like count in the Post table by using the count() function, I coul
 
 To avoid any issues, I may convert the variable with the like count into an int.
 
+To always get the correct like count on the client side, I think I will send the like count from the like() view to the 
+JS code via a JSON response variable.
+
 """
 
 @login_required
@@ -910,8 +913,11 @@ def like(request, post_id):
             Post.objects.filter(id=post_id).update(number_of_likes=like_count_from_like_table)
 
 
-            # This sends a Boolean via JSON data to the JS code to add a like
-            return JsonResponse({"add_like": True}, status=201)
+            # This sends a Boolean and the like count via JSON data to the JS code to add a like
+            return JsonResponse({
+                "add_like": True,
+                "like_count_from_like_table": like_count_from_like_table
+            }, status=201)
 
         # If the post had already been liked, I will remove it from the "Like" table
         else:
@@ -930,7 +936,10 @@ def like(request, post_id):
             Post.objects.filter(id=post_id).update(number_of_likes=like_count_from_like_table)
 
             # This sends a Boolean via JSON data to the JS code to remove the like
-            return JsonResponse({"add_like": False}, status=201)
+            return JsonResponse({
+                "add_like": False,
+                "like_count_from_like_table": like_count_from_like_table
+            }, status=201)
 
             # This gets all the favorite users of the logged user
             # favorite_users_query = Follower.objects.filter(follower__id=logged_user_id)
